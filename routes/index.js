@@ -42,6 +42,7 @@ import vinculosRoutes from './vinculos.routes'
 import grupos_procesosRoutes from './grupos_procesos.routes'
 import items_procesosRoutes from './items_procesos.routes'
 import envio_mailRoutes from './envio_mail.routes'
+import p_template_correos from './p_template_correos.routes'
 
 const router = routerx()
 
@@ -88,5 +89,6 @@ router.use('/vinculos', vinculosRoutes)
 router.use('/gruposProcesos', grupos_procesosRoutes)
 router.use('/itemsProcesos', items_procesosRoutes)
 router.use('/servicio', envio_mailRoutes)
+router.use('/templateCorreos', p_template_correos)
 
 export default router

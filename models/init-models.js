@@ -42,6 +42,7 @@ var _transacciones = require("./transacciones");
 var _usuarios = require("./usuarios");
 var _vinculos = require("./vinculos");
 var _movil = require("./movil");
+var _p_template_correos = require("./p_template_correos");
 
 function initModels(sequelize) {
   var codigos_barra = _codigos_barra(sequelize, DataTypes);
@@ -87,6 +88,7 @@ function initModels(sequelize) {
   var usuarios = _usuarios(sequelize, DataTypes);
   var vinculos = _vinculos(sequelize, DataTypes);
   var movil = _movil(sequelize, DataTypes);
+  var p_template_correos = _p_template_correos(sequelize, DataTypes);
 
   deudores.belongsToMany(p_redes_sociales, { through: redes_sociales, foreignKey: "id_deudor", otherKey: "id_red_social" });
   empresas.belongsToMany(p_codigos_tabla, { through: p_empresas_param, foreignKey: "id_empresa", otherKey: "id_tabla" });
@@ -128,6 +130,7 @@ function initModels(sequelize) {
   p_tipos_convenio.belongsTo(empresas, { as: "id_empresa_empresa", foreignKey: "id_empresa"});
   empresas.hasMany(p_tipos_convenio, { as: "p_tipos_convenios", foreignKey: "id_empresa"});
   politicas.belongsTo(empresas, { as: "id_empresa_empresa", foreignKey: "id_empresa"});
+  p_template_correos.belongsTo(empresas, { as: "id_empresa_empresa", foreignKey: "id_empresa"});
   empresas.hasMany(politicas, { as: "politicas", foreignKey: "id_empresa"});
   items_procesos.belongsTo(grupos_procesos, { as: "id_grupo_grupos_proceso", foreignKey: "id_grupo"});
   grupos_procesos.hasMany(items_procesos, { as: "items_procesos", foreignKey: "id_grupo"});
