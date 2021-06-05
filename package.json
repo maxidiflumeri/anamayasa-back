@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node index.js --exec",    
+    "start": "babel-node index.js --exec",
     "dev": "set NODE_ENV=development&& nodemon index.js --exec babel-node",
     "prod": "set NODE_ENV=production&& pm2 start build/index.js",
     "dev-linux": "export NODE_ENV=development&& nodemon index.js --exec babel-node",
