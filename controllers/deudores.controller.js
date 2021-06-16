@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
 import serviceTransaccion from '../services/transaccion.service'
+import actualiza from '../services/actualizaDeuda.service'
+import deudorDto from '../dtos/deudor.dto'
 
 class deudorController {
 
@@ -22,7 +24,9 @@ class deudorController {
       async obtenerPorId(req, res, next){
         try{
             const response = await this._model.findAll({where: {id_deudor: req.query.id}})
-            res.status(200).json(response)
+            const deuda_actualizada = await actualiza.actualizaDeuda(response[0].deuda_historica, response[0].id_tipo_actualizacion, response[0].fecha_mora, response[0].id_iva, response[0].id_empresa)
+            const deudor = new deudorDto(response[0], deuda_actualizada)                        
+            res.status(200).json(deudor)
         }catch(error){              
             res.status(500).json({
                 mensaje: 'Ocurrio un error'
