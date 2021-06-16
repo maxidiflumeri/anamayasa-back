@@ -14,12 +14,20 @@ import { QueryTypes } from 'sequelize'
 // param8: valor4_monto_fijo_recargo
 
 export default {
-    actualizaDeuda: async (deuda_historica, id_tipo_actualizacion, fecha_mora, id_iva, id_empresa) => {       
+    actualizaDeuda: async (deuda_historica, id_tipo_actualizacion, fecha_mora, id_iva, id_empresa, id_deudor) => {       
         
         return new Promise(async (resolve, reject) => {
             try{
                 const iva = await models.p_tipos_iva.findAll({where: {id_tipo_iva: id_iva}})            
-                const tasa_interes = await models.p_tasas_interes.findAll({where: {id_empresa: id_empresa}})                 
+                const tasa_interes = await models.p_tasas_interes.findAll({where: {id_empresa: id_empresa}})
+                const pagos = await models.pagos.findAll({where: {id_deudor: id_deudor}})   
+                let pagosAcum = 0
+                pagos.forEach(pago => {
+                    if(pago.id_tipo_pago == 0 || pago.id_tipo_pago == 1){
+                        pagosAcum = pagosAcum + pago.importe_total        
+                    }
+                })
+                deuda_historica = deuda_historica - pagosAcum      
                 
                 const recargo = await connection.query('DECLARE @RES VARCHAR(MAX) EXEC sp_calcula_actualizado :param1, :param2, :param3, :param4, :param5, :param6, :param7, :param8, @RES output select @RES as interes',
                 {

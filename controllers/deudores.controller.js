@@ -24,7 +24,7 @@ class deudorController {
       async obtenerPorId(req, res, next){
         try{
             const response = await this._model.findAll({where: {id_deudor: req.query.id}})
-            const deuda_actualizada = await actualiza.actualizaDeuda(response[0].deuda_historica, response[0].id_tipo_actualizacion, response[0].fecha_mora, response[0].id_iva, response[0].id_empresa)
+            const deuda_actualizada = await actualiza.actualizaDeuda(response[0].deuda_historica, response[0].id_tipo_actualizacion, response[0].fecha_mora, response[0].id_iva, response[0].id_empresa, response[0].id_deudor)
             const deudor = new deudorDto(response[0], deuda_actualizada)                        
             res.status(200).json(deudor)
         }catch(error){              
