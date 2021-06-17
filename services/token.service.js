@@ -19,8 +19,8 @@ async function chequearToken(token){
 }
 
 export default {
-    codificar: async (id_usuario, id_rol, correo, legajo_neotel) => {
-        const token = jwt.sign({id_usuario: id_usuario, rol: id_rol, correo: correo, legajo_neotel: legajo_neotel}, 'claveSecretaToken', {expiresIn: '1d'})
+    codificar: async (id_usuario, id_rol, correo, legajo_neotel, nombre) => {
+        const token = jwt.sign({id_usuario: id_usuario, rol: id_rol, correo: correo, legajo_neotel: legajo_neotel, nombre: nombre}, 'claveSecretaToken', {expiresIn: '1d'})
         return token
     },
 
