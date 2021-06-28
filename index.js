@@ -6,11 +6,11 @@ import express from 'express'
 import path from 'path'
 import connection from './config/db/connection'
 import servidor from './config/server/Servidor'
-import fs from 'fs'
-import https from 'https'
+import cronService from './services/cron.service'
 
 const server = new servidor()
 const app = server.crearServidor()
+cronService.generarTareas()
 
 //app.use(express.static(path.join(__dirname, 'public')))
 

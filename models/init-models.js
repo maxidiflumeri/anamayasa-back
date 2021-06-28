@@ -43,6 +43,7 @@ var _usuarios = require("./usuarios");
 var _vinculos = require("./vinculos");
 var _movil = require("./movil");
 var _p_template_correos = require("./p_template_correos");
+var _tareas = require("./tareas");
 
 function initModels(sequelize) {
   var codigos_barra = _codigos_barra(sequelize, DataTypes);
@@ -89,6 +90,7 @@ function initModels(sequelize) {
   var vinculos = _vinculos(sequelize, DataTypes);
   var movil = _movil(sequelize, DataTypes);
   var p_template_correos = _p_template_correos(sequelize, DataTypes);
+  var tareas = _tareas(sequelize, DataTypes);
 
   deudores.belongsToMany(p_redes_sociales, { through: redes_sociales, foreignKey: "id_deudor", otherKey: "id_red_social" });
   empresas.belongsToMany(p_codigos_tabla, { through: p_empresas_param, foreignKey: "id_empresa", otherKey: "id_tabla" });
@@ -232,7 +234,8 @@ function initModels(sequelize) {
     transacciones,
     usuarios,
     vinculos,
-    movil
+    movil,
+    tareas
   };
 }
 module.exports = initModels;
