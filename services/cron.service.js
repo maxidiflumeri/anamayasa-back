@@ -6,7 +6,7 @@ async function generarTareas(){
     console.log(cron.getTasks())            
     try{        
         let tareas = await models.tareas.findAll()        
-        cron.schedule('45 11 * * *', () => {   
+        cron.schedule('53 11 * * *', () => {   
             let arrayTareas = cron.getTasks()
             arrayTareas.forEach((tarea) => {
                 tarea.stop()
