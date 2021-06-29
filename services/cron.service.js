@@ -2,25 +2,15 @@ import cron from 'node-cron'
 import models from '../models/index'
 import envioMail from '../services/envioMail.service'
 
-// let tareas = [
-//     {
-//         id: 1,
-//         patron: "39 12 * * *",
-//         accion: "voy a mandar un mail",
-//         correo: "pepe@gmail.com"
-//     },
-//     {
-//         id: 2,
-//         patron: "39 12 * * *",
-//         accion: "voy a mandar un mail",
-//         correo: "pepe3@gmail.com"
-//     }
-// ]
-
 async function generarTareas(){
+    console.log(cron.getTasks())            
     try{        
         let tareas = await models.tareas.findAll()        
-        cron.schedule('23 13 * * *', () => {          
+        cron.schedule('45 11 * * *', () => {   
+            let arrayTareas = cron.getTasks()
+            arrayTareas.forEach((tarea) => {
+                tarea.stop()
+            })       
             generoTareas(tareas)        
         });
     }catch(error){
@@ -28,26 +18,20 @@ async function generarTareas(){
     }
 }
 
-
-// const tarea = cron.schedule('05 13 * * *', () => {          
-//     generoTareas()
-
-// });
-
 function generoTareas(tareas){   
     console.log('entro a la funcion generar y recibo las tareas')     
     tareas.forEach( (tarea) => {        
         try{
             console.log('genero tarea ' + tarea.id_tarea)        
             cron.schedule(tarea.patron, async () => {            
-                let resultado = await envioMail.enviarMail('maximd@anamayasa.com.ar', 'Diflu2020', tarea.destinatario1, tarea.asunto, tarea.cuerpo, null)
-                console.log(resultado)
+                let resultado = await envioMail.enviarMail('maximd@anamayasa.com.ar', 'Diflu2020', tarea.destinatario1, tarea.asunto, tarea.cuerpo, null)                
             })            
         }catch(error){
             console.log("errorrrrrr")
             console.log(error)
         }
     })
+    console.log(cron.getTasks())            
 }
 
 export default {
