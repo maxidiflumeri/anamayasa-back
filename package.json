@@ -31,6 +31,7 @@
     "helmet": "^4.4.1",
     "html-to-text": "^7.0.0",
     "https": "^1.0.0",
+    "json2xls": "^0.1.2",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mssql": "^6.3.2",
@@ -42,6 +43,7 @@
     "sequelize-auto": "^0.7.11",
     "tedious": "^11.0.4",
     "textversionjs": "^1.1.3",
-    "underscore": "^1.12.0"
+    "underscore": "^1.12.0",
+    "xlsx": "^0.17.0"
   }
 }

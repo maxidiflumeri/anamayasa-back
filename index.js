@@ -12,6 +12,8 @@ const server = new servidor()
 const app = server.crearServidor()
 cronService.generarTareas()
 
+
+
 //app.use(express.static(path.join(__dirname, 'public')))
 
 // https.createServer({
@@ -30,8 +32,8 @@ cronService.generarTareas()
 app.listen(app.get('port'), async ()=>{    
     console.log('servidor escuchando en puerto ' + app.get('port'))
     try{
-        await connection.authenticate()
-        console.log('Nos hemos conectado a la base de datos exitosamente'.bgGreen.black)
+        await connection.authenticate()        
+        console.log('Nos hemos conectado a la base de datos exitosamente'.bgGreen.black)               
     }catch(error){        
         console.log('Error al conectar a la base de datos'.bgRed.white)
     }

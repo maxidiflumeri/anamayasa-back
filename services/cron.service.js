@@ -2,8 +2,7 @@ import cron from 'node-cron'
 import models from '../models/index'
 import envioMail from '../services/envioMail.service'
 
-async function generarTareas(){
-    console.log(cron.getTasks())            
+async function generarTareas(){            
     try{        
         let tareas = await models.tareas.findAll()        
         cron.schedule('53 11 * * *', () => {   
@@ -30,8 +29,7 @@ function generoTareas(tareas){
             console.log("errorrrrrr")
             console.log(error)
         }
-    })
-    console.log(cron.getTasks())            
+    })           
 }
 
 export default {
