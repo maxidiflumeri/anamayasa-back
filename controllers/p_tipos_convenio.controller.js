@@ -28,6 +28,18 @@ class p_tipos_convenioController {
         }          
       }
 
+      async obtenerPorIdEmpresa(req, res, next){
+        try{
+            const response = await this._model.findAll({where: {id_empresa: req.query.id_empresa}})
+            res.status(200).json(response)
+        }catch(error){              
+            res.status(500).json({
+                mensaje: 'Ocurrio un error'
+            })
+            next(error)
+        }          
+      }
+
       async agregar(req, res, next){          
         try{                
             const response = await this._model.create(req.body)

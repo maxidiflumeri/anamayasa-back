@@ -10,17 +10,18 @@ const router = routerx()
 router.get('/consultar', auth.verificarGestor, async (req, res, next) => {
     if (underscore.isEmpty(req.query)) {
         _p_tipos_convenioController.obtenerTodos(req, res, next)
-    }
-    else if (req.query.id) {
+    } else if (req.query.id) {
         _p_tipos_convenioController.obtenerPorId(req, res, next)
+    } else if (req.query.id_empresa) {
+        _p_tipos_convenioController.obtenerPorIdEmpresa(req, res, next)
     } else {
         res.status(404).json({
             mensaje: 'Parametros incorrectos.'
         })
-    }  
+    }
 })
 
-router.post('/agregar', auth.verificarAdministrador, async (req, res, next) => {    
+router.post('/agregar', auth.verificarAdministrador, async (req, res, next) => {
     _p_tipos_convenioController.agregar(req, res, next)
 })
 

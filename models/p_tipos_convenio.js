@@ -346,6 +346,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DECIMAL(18,2),
       allowNull: true
     },
+    es_libre: {
+      type: DataTypes.DECIMAL(1,0),
+      allowNull: false
+    },
     aux1: {
       type: DataTypes.STRING(100),
       allowNull: true

@@ -35,7 +35,17 @@ router.get('/consultar', auth.verificarGestor, async (req, res, next) => {
     }
 })
 
-router.post('/agregar', auth.verificarAdministrador, async (req, res, next) => {        
+router.get('/actualizaDeuda', auth.verificarGestor, async (req, res, next) => {
+    if (req.query.monto && req.query.id_tipo_actualizacion && req.query.fecha && req.query.id_iva && req.query.id_empresa && req.query.id_deudor) {
+        _deudoresController.actualizaDeuda(req, res, next)
+    } else {
+        res.status(404).json({
+            mensaje: 'Parametros incorrectos.'
+        })
+    }
+})
+
+router.post('/agregar', auth.verificarAdministrador, async (req, res, next) => {
     _deudoresController.agregar(req, res, next)
 })
 
@@ -46,5 +56,6 @@ router.put('/modificar/:id', auth.verificarGestor, async (req, res, next) => {
 router.delete('/eliminar/:id', auth.verificarAdministrador, async (req, res, next) => {
     _deudoresController.eliminar(req, res, next)
 })
+
 
 export default router
