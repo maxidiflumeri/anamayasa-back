@@ -1,3 +1,6 @@
+import models from '../models/index'
+import serviceTransaccion from '../services/transaccion.service'
+
 class conveniosController {
 
     constructor(model) {
@@ -29,8 +32,8 @@ class conveniosController {
       }
 
       async obtenerPorIdDeudor(req, res, next){
-        try{
-            const response = await this._model.findAll({where: {id_deudor: req.query.id_deudor}})
+        try{            
+            const response = await this._model.findAll({where: {id_deudor: req.query.id_deudor}})            
             res.status(200).json(response)
         }catch(error){              
             res.status(500).json({
@@ -41,8 +44,13 @@ class conveniosController {
       }
 
       async agregar(req, res, next){          
+          const convenioNuevo = req.body.convenioNuevo
+          const facturas = req.body.facturas 
         try{                
-            const response = await this._model.create(req.body)
+            const response = await this._model.create(convenioNuevo)            
+            await this.cargaIdConvenioEnFacturas(facturas, response.id_convenio)
+            const detalle = `Se genera convenio por ${convenioNuevo.importe} en ${convenioNuevo.cuotas} cuotas.`
+            serviceTransaccion.generaTransaccion(req.headers.token, convenioNuevo.id_deudor, 7, detalle, null, null)
             res.status(200).json(response)
         }catch(error){              
             res.status(500).json({
@@ -79,6 +87,20 @@ class conveniosController {
             })
             next(error)
         }   
+      }
+
+
+      cargaIdConvenioEnFacturas(facturas, id_convenio){
+        return new Promise(async (resolve, reject) => {
+            facturas.forEach(async factura => {
+                try{
+                    await models.facturas.update({id_convenio: id_convenio}, {where: {id_factura: factura.id_factura}})
+                }catch(error){
+                    console.log(error)
+                }
+            })
+            resolve(true)
+        })
       }
 }
 

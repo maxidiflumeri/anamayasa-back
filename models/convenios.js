@@ -45,7 +45,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     id_direccion: {
       type: DataTypes.DECIMAL(18,0),
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'direcciones',
         key: 'id_direccion'
