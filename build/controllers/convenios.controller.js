@@ -121,7 +121,26 @@ class conveniosController {
     }
   }
 
-  cargaIdConvenioEnFacturas(facturas, id_convenio) {
+  async anularConvenio(req, res, next) {
+    try {
+      const response = await this._model.update({
+        anulado: 1
+      }, {
+        where: {
+          id_convenio: req.params.id
+        }
+      });
+      await this.borrarIdConvenioEnFacturas(req.params.id);
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({
+        mensaje: 'Ocurrio un error'
+      });
+      next(error);
+    }
+  }
+
+  async cargaIdConvenioEnFacturas(facturas, id_convenio) {
     return new Promise(async (resolve, reject) => {
       facturas.forEach(async factura => {
         try {
@@ -137,6 +156,26 @@ class conveniosController {
         }
       });
       resolve(true);
+    });
+  }
+
+  async borrarIdConvenioEnFacturas(id_convenio) {
+    let resultado = null;
+    return new Promise(async (resolve, reject) => {
+      try {
+        resultado = await _index.default.facturas.update({
+          id_convenio: null
+        }, {
+          where: {
+            id_convenio: id_convenio
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        resultado = error;
+      }
+
+      resolve(resultado);
     });
   }
 

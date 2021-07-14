@@ -29,6 +29,10 @@ router.put('/modificar/:id', auth.verificarAdministrador, async (req, res, next)
     _conveniosController.actualizar(req, res, next)
 })
 
+router.put('/anular/:id', auth.verificarGestor, async (req, res, next) => {    
+    _conveniosController.anularConvenio(req, res, next)
+})
+
 router.delete('/eliminar/:id', auth.verificarLider, async (req, res, next) => {
     _conveniosController.eliminar(req, res, next)
 })

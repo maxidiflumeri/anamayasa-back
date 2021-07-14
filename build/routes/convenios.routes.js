@@ -39,6 +39,9 @@ router.post('/agregar', _auth.default.verificarGestor, async (req, res, next) =>
 router.put('/modificar/:id', _auth.default.verificarAdministrador, async (req, res, next) => {
   _conveniosController.actualizar(req, res, next);
 });
+router.put('/anular/:id', _auth.default.verificarGestor, async (req, res, next) => {
+  _conveniosController.anularConvenio(req, res, next);
+});
 router.delete('/eliminar/:id', _auth.default.verificarLider, async (req, res, next) => {
   _conveniosController.eliminar(req, res, next);
 });
