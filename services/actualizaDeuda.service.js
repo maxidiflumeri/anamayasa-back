@@ -23,7 +23,7 @@ export default {
                 const pagos = await models.pagos.findAll({where: {id_deudor: id_deudor}})   
                 let pagosAcum = 0
                 pagos.forEach(pago => {
-                    if(pago.id_tipo_pago == 0 || pago.id_tipo_pago == 1){
+                    if((pago.id_tipo_pago == 0 || pago.id_tipo_pago == 1) && pago.anulado == 0){
                         pagosAcum = pagosAcum + pago.importe_total        
                     }
                 })

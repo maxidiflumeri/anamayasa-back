@@ -6,7 +6,7 @@ const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 import constantes from '../config/shared/constantes'
 const db = {};
-let sequelize = new Sequelize(constantes.DB.database, constantes.DB.username, constantes.DB.password, constantes.DB);
+let sequelize = new Sequelize(constantes.DB);
 
 fs
   .readdirSync(__dirname)

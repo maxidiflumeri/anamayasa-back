@@ -7,6 +7,8 @@ import path from 'path'
 import connection from './config/db/connection'
 import servidor from './config/server/Servidor'
 import cronService from './services/cron.service'
+import moment from 'moment'
+moment.tz.setDefault('UTC');
 
 const server = new servidor()
 const app = server.crearServidor()

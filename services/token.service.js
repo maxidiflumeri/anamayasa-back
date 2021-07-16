@@ -12,7 +12,7 @@ async function chequearToken(token){
     const user = await models.usuarios.findAll({where: {id_usuario: _id}})
     if(user[0]){
         const token = jwt.sign({id_usuario: user[0].id_usuario, rol: user[0].id_rol, correo: user[0].correo, legajo_neotel: user[0].legajo_neotel}, 'claveSecretaToken', {expiresIn: '1d'})
-        return {token, id_rol: user[0].id_rol}
+        return {token, id_rol: user[0].id_rol, id_usuario: user[0].id_usuario}
     }else{
         return false
     }

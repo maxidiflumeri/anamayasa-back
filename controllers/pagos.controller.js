@@ -33,7 +33,7 @@ class pagosController {
 
       async obtenerPorIdDeudor(req, res, next){
         try{
-            const response = await this._model.findAll({where: {id_deudor: req.query.id_deudor}})
+            const response = await this._model.findAll({where: {id_deudor: req.query.id_deudor, anulado: 0}})
             res.status(200).json(response)
         }catch(error){              
             res.status(500).json({
@@ -63,6 +63,22 @@ class pagosController {
       async actualizar(req, res, next){
         try{
             const response = await this._model.update(req.body, {where: {id_deudor: req.params.id, nro_comprobante: req.params.nro_comprobante}})
+            res.status(200).json(response)
+
+        }catch(error){              
+            res.status(500).json({
+                mensaje: 'Ocurrio un error'
+            })
+            next(error)
+        }       
+      }
+
+      async anularPago(req, res, next){
+        try{
+            const response = await this._model.update({ anulado: 1 }, { where: { id_pago: req.params.id_pago } })
+            if(req.params.codigo == 8){
+                await models.deudores.update({id_situacion: 2}, {where: {id_deudor: req.params.id_deudor}})
+            } 
             res.status(200).json(response)
 
         }catch(error){              

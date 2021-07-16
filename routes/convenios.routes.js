@@ -29,7 +29,7 @@ router.put('/modificar/:id', auth.verificarAdministrador, async (req, res, next)
     _conveniosController.actualizar(req, res, next)
 })
 
-router.put('/anular/:id', auth.verificarGestor, async (req, res, next) => {    
+router.put('/anular/:id/:id_deudor', auth.verificarGestor, async (req, res, next) => {    
     _conveniosController.anularConvenio(req, res, next)
 })
 

@@ -93,6 +93,8 @@ class conveniosController {
         try {
             const response = await this._model.update({ anulado: 1 }, { where: { id_convenio: req.params.id } })
             await this.borrarIdConvenioEnFacturas(req.params.id)
+            const detalle = `Se anula convenio número ${req.params.id}.`
+            serviceTransaccion.generaTransaccion(req.headers.token, req.params.id_deudor, 9, detalle, null, null)
             res.status(200).json(response)
         } catch (error) {            
             res.status(500).json({
