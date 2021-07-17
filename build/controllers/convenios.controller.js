@@ -131,6 +131,10 @@ class conveniosController {
         }
       });
       await this.borrarIdConvenioEnFacturas(req.params.id);
+      const detalle = `Se anula convenio número ${req.params.id}.`;
+
+      _transaccion.default.generaTransaccion(req.headers.token, req.params.id_deudor, 9, detalle, null, null);
+
       res.status(200).json(response);
     } catch (error) {
       res.status(500).json({

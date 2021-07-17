@@ -42,7 +42,8 @@ async function chequearToken(token) {
 
     return {
       token,
-      id_rol: user[0].id_rol
+      id_rol: user[0].id_rol,
+      id_usuario: user[0].id_usuario
     };
   } else {
     return false;

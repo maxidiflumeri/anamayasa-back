@@ -12,11 +12,15 @@ var _Servidor = _interopRequireDefault(require("./config/server/Servidor"));
 
 var _cron = _interopRequireDefault(require("./services/cron.service"));
 
+var _moment = _interopRequireDefault(require("moment"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //import libreria para cambiar colores en la consola
 // importa servidor express
 //dependencia que me permite ver el path donde se encuentra el proyecto
+_moment.default.tz.setDefault('UTC');
+
 const server = new _Servidor.default();
 const app = server.crearServidor();
 

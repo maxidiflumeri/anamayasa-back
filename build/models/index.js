@@ -12,7 +12,7 @@ const Sequelize = require('sequelize');
 
 const basename = path.basename(__filename);
 const db = {};
-let sequelize = new Sequelize(_constantes.default.DB.database, _constantes.default.DB.username, _constantes.default.DB.password, _constantes.default.DB);
+let sequelize = new Sequelize(_constantes.default.DB);
 fs.readdirSync(__dirname).filter(file => {
   return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
 }).forEach(file => {

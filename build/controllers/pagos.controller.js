@@ -9,6 +9,10 @@ var _transaccion = _interopRequireDefault(require("../services/transaccion.servi
 
 var _index = _interopRequireDefault(require("../models/index"));
 
+var _moment = _interopRequireDefault(require("moment"));
+
+var _sequelize = require("sequelize");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class pagosController {
@@ -49,7 +53,8 @@ class pagosController {
     try {
       const response = await this._model.findAll({
         where: {
-          id_deudor: req.query.id_deudor
+          id_deudor: req.query.id_deudor,
+          anulado: 0
         }
       });
       res.status(200).json(response);
@@ -63,22 +68,39 @@ class pagosController {
 
   async agregar(req, res, next) {
     try {
-      const response = await this._model.create(req.body);
-      const detalle = `Se carga nuevo pago, tipo pago ${req.body.id_tipo_pago}, fecha de pago ${req.body.fecha_pago}, importe ${req.body.importe_total}`;
-
-      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 5, detalle, null, null);
-
-      if (req.body.id_tipo_pago == 8) {
-        await _index.default.deudores.update({
-          id_situacion: 8
-        }, {
-          where: {
-            id_deudor: req.body.id_deudor
+      const promesas = await this._model.findAll({
+        where: {
+          id_deudor: req.body.id_deudor,
+          id_tipo_pago: 8,
+          anulado: 0,
+          fecha_pago: {
+            [_sequelize.Op.gt]: new Date()
           }
-        });
-      }
+        }
+      });
 
-      res.status(200).json(response);
+      if (promesas.length > 0) {
+        res.status(500).json({
+          mensaje: 'Ya existe promesa de pago'
+        });
+      } else {
+        const response = await this._model.create(req.body);
+        const detalle = `Se carga nuevo pago, tipo pago ${req.body.id_tipo_pago}, fecha de pago ${req.body.fecha_pago}, importe ${req.body.importe_total}`;
+
+        _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 5, detalle, null, null);
+
+        if (req.body.id_tipo_pago == 8) {
+          await _index.default.deudores.update({
+            id_situacion: 8
+          }, {
+            where: {
+              id_deudor: req.body.id_deudor
+            }
+          });
+        }
+
+        res.status(200).json(response);
+      }
     } catch (error) {
       res.status(500).json({
         mensaje: 'Ocurrio un error'
@@ -95,6 +117,39 @@ class pagosController {
           nro_comprobante: req.params.nro_comprobante
         }
       });
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({
+        mensaje: 'Ocurrio un error'
+      });
+      next(error);
+    }
+  }
+
+  async anularPago(req, res, next) {
+    try {
+      const response = await this._model.update({
+        anulado: 1
+      }, {
+        where: {
+          id_pago: req.params.id_pago
+        }
+      });
+
+      if (req.params.codigo == 8) {
+        await _index.default.deudores.update({
+          id_situacion: 2
+        }, {
+          where: {
+            id_deudor: req.params.id_deudor
+          }
+        });
+      }
+
+      const detalle = `Se anula pago id ${req.params.id_pago}`;
+
+      _transaccion.default.generaTransaccion(req.headers.token, req.params.id_deudor, 18, detalle, null, null);
+
       res.status(200).json(response);
     } catch (error) {
       res.status(500).json({

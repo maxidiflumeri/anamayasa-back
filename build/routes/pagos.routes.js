@@ -39,6 +39,9 @@ router.post('/agregar', _auth.default.verificarGestor, async (req, res, next) =>
 router.put('/modificar/:id/:nro_comprobante', _auth.default.verificarAdministrador, async (req, res, next) => {
   _pagosController.actualizar(req, res, next);
 });
+router.put('/anular/:id_pago/:codigo/:id_deudor', _auth.default.verificarGestor, async (req, res, next) => {
+  _pagosController.anularPago(req, res, next);
+});
 router.delete('/eliminar/:id/:nro_comprobante', _auth.default.verificarLider, async (req, res, next) => {
   _pagosController.eliminar(req, res, next);
 });
