@@ -9,6 +9,8 @@ var _index = _interopRequireDefault(require("../models/index"));
 
 var _transaccion = _interopRequireDefault(require("../services/transaccion.service"));
 
+var _connection = _interopRequireDefault(require("../config/db/connection"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class conveniosController {
@@ -61,18 +63,35 @@ class conveniosController {
   }
 
   async agregar(req, res, next) {
+    const t = await _connection.default.transaction();
     const convenioNuevo = req.body.convenioNuevo;
-    const facturas = req.body.facturas;
+    const bodyFacturas = req.body.facturas;
 
     try {
-      const response = await this._model.create(convenioNuevo);
-      await this.cargaIdConvenioEnFacturas(facturas, response.id_convenio);
+      const response = await this._model.create(convenioNuevo, {
+        transaction: t
+      });
+
+      for (var i = 0; i < bodyFacturas.length; i++) {
+        let factura = bodyFacturas[i];
+        await _index.default.facturas.update({
+          id_convenio: response.id_convenio
+        }, {
+          where: {
+            id_factura: factura.id_factura
+          },
+          transaction: t
+        });
+      }
+
       const detalle = `Se genera convenio por ${convenioNuevo.importe} en ${convenioNuevo.cuotas} cuotas.`;
 
       _transaccion.default.generaTransaccion(req.headers.token, convenioNuevo.id_deudor, 7, detalle, null, null);
 
+      await t.commit();
       res.status(200).json(response);
     } catch (error) {
+      await t.rollback();
       res.status(500).json({
         mensaje: 'Ocurrio un error'
       });
@@ -122,65 +141,38 @@ class conveniosController {
   }
 
   async anularConvenio(req, res, next) {
+    const t = await _connection.default.transaction();
+
     try {
       const response = await this._model.update({
         anulado: 1
       }, {
         where: {
           id_convenio: req.params.id
-        }
+        },
+        transaction: t
       });
-      await this.borrarIdConvenioEnFacturas(req.params.id);
+      await _index.default.facturas.update({
+        id_convenio: null
+      }, {
+        where: {
+          id_convenio: req.params.id
+        },
+        transaction: t
+      });
       const detalle = `Se anula convenio número ${req.params.id}.`;
 
       _transaccion.default.generaTransaccion(req.headers.token, req.params.id_deudor, 9, detalle, null, null);
 
+      await t.commit();
       res.status(200).json(response);
     } catch (error) {
+      await t.rollback();
       res.status(500).json({
         mensaje: 'Ocurrio un error'
       });
       next(error);
     }
-  }
-
-  async cargaIdConvenioEnFacturas(facturas, id_convenio) {
-    return new Promise(async (resolve, reject) => {
-      facturas.forEach(async factura => {
-        try {
-          await _index.default.facturas.update({
-            id_convenio: id_convenio
-          }, {
-            where: {
-              id_factura: factura.id_factura
-            }
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      });
-      resolve(true);
-    });
-  }
-
-  async borrarIdConvenioEnFacturas(id_convenio) {
-    let resultado = null;
-    return new Promise(async (resolve, reject) => {
-      try {
-        resultado = await _index.default.facturas.update({
-          id_convenio: null
-        }, {
-          where: {
-            id_convenio: id_convenio
-          }
-        });
-      } catch (error) {
-        console.log(error);
-        resultado = error;
-      }
-
-      resolve(resultado);
-    });
   }
 
 }

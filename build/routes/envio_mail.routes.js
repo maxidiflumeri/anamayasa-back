@@ -22,5 +22,8 @@ const _envioMailController = new _envio_mail.default();
 router.post('/envioMail', [_auth.default.verificarGestor, _multer.default.upload.array('adjuntos', 10)], async (req, res, next) => {
   _envioMailController.enviarMail(req, res, next);
 });
+router.post('/envioCuponPdfMail', _auth.default.verificarGestor, async (req, res, next) => {
+  _envioMailController.enviarPdfPorMail(req, res, next);
+});
 var _default = router;
 exports.default = _default;

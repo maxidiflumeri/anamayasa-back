@@ -14,8 +14,6 @@ const server = new servidor()
 const app = server.crearServidor()
 cronService.generarTareas()
 
-
-
 //app.use(express.static(path.join(__dirname, 'public')))
 
 // https.createServer({

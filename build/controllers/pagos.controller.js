@@ -9,7 +9,7 @@ var _transaccion = _interopRequireDefault(require("../services/transaccion.servi
 
 var _index = _interopRequireDefault(require("../models/index"));
 
-var _moment = _interopRequireDefault(require("moment"));
+var _connection = _interopRequireDefault(require("../config/db/connection"));
 
 var _sequelize = require("sequelize");
 
@@ -67,6 +67,8 @@ class pagosController {
   }
 
   async agregar(req, res, next) {
+    const t = await _connection.default.transaction();
+
     try {
       const promesas = await this._model.findAll({
         where: {
@@ -84,7 +86,9 @@ class pagosController {
           mensaje: 'Ya existe promesa de pago'
         });
       } else {
-        const response = await this._model.create(req.body);
+        const response = await this._model.create(req.body, {
+          transaction: t
+        });
         const detalle = `Se carga nuevo pago, tipo pago ${req.body.id_tipo_pago}, fecha de pago ${req.body.fecha_pago}, importe ${req.body.importe_total}`;
 
         _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 5, detalle, null, null);
@@ -95,13 +99,16 @@ class pagosController {
           }, {
             where: {
               id_deudor: req.body.id_deudor
-            }
+            },
+            transaction: t
           });
         }
 
+        await t.commit();
         res.status(200).json(response);
       }
     } catch (error) {
+      await t.rollback();
       res.status(500).json({
         mensaje: 'Ocurrio un error'
       });
@@ -127,13 +134,16 @@ class pagosController {
   }
 
   async anularPago(req, res, next) {
+    const t = await _connection.default.transaction();
+
     try {
       const response = await this._model.update({
         anulado: 1
       }, {
         where: {
           id_pago: req.params.id_pago
-        }
+        },
+        transaction: t
       });
 
       if (req.params.codigo == 8) {
@@ -142,7 +152,8 @@ class pagosController {
         }, {
           where: {
             id_deudor: req.params.id_deudor
-          }
+          },
+          transaction: t
         });
       }
 
@@ -150,8 +161,10 @@ class pagosController {
 
       _transaccion.default.generaTransaccion(req.headers.token, req.params.id_deudor, 18, detalle, null, null);
 
+      await t.commit();
       res.status(200).json(response);
     } catch (error) {
+      await t.rollback();
       res.status(500).json({
         mensaje: 'Ocurrio un error'
       });

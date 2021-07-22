@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _sequelize = require("sequelize");
+
 class codigos_barraController {
   constructor(model) {
     this._model = model;
@@ -42,7 +44,10 @@ class codigos_barraController {
     try {
       const response = await this._model.findAll({
         where: {
-          id_deudor: req.query.id_deudor
+          id_deudor: req.query.id_deudor,
+          fecha_vencimiento: {
+            [_sequelize.Op.gt]: new Date()
+          }
         }
       });
       res.status(200).json(response);

@@ -28,13 +28,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 class Servidor {
   crearServidor() {
     const app = (0, _express.default)();
+    app.use(_express.default.json({
+      limit: '50mb'
+    }));
     app.use(_express.default.urlencoded({
+      limit: '50mb',
       extended: true
     })); //        app.use(connect())    
 
-    app.use((0, _compression.default)()); //      app.use(helmet())
+    app.use((0, _compression.default)()); //      app.use(helmet())        
 
-    app.use(_express.default.json());
     app.use((0, _cors.default)());
     app.use((0, _morgan.default)('dev'));
     app.use('/api', _index.default);

@@ -10,6 +10,10 @@ router.post('/envioMail', [auth.verificarGestor, multer.upload.array('adjuntos',
     _envioMailController.enviarMail(req, res, next)
 })
 
+router.post('/envioCuponPdfMail', auth.verificarGestor, async (req, res, next) => {    
+    _envioMailController.enviarPdfPorMail(req, res, next)
+})
+
 export default router
 
 
