@@ -41,9 +41,16 @@ class deudorController {
           id_deudor: req.query.id
         }
       });
-      const deuda_actualizada = await _actualizaDeuda.default.actualizaDeuda(response[0].deuda_historica, response[0].id_tipo_actualizacion, response[0].fecha_mora, response[0].id_iva, response[0].id_empresa, response[0].id_deudor);
-      const deudor = new _deudor.default(response[0], deuda_actualizada);
-      res.status(200).json(deudor);
+
+      if (response.length > 0) {
+        const deuda_actualizada = await _actualizaDeuda.default.actualizaDeuda(response[0].deuda_historica, response[0].id_tipo_actualizacion, response[0].fecha_mora, response[0].id_iva, response[0].id_empresa, response[0].id_deudor);
+        const deudor = new _deudor.default(response[0], deuda_actualizada);
+        res.status(200).json(deudor);
+      } else {
+        res.status(200).json({
+          mensaje: 'no se encuentra'
+        });
+      }
     } catch (error) {
       res.status(500).json({
         mensaje: 'Ocurrio un error'

@@ -24,7 +24,18 @@ const constantes = {
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    logging: process.env.DB_LOGGING == 'true' ? true : false
+    logging: process.env.DB_LOGGING == 'true' ? true : false,
+    dialectOptions: {
+      options: {
+        requestTimeout: 300000
+      }
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
   }
 };
 var _default = constantes;

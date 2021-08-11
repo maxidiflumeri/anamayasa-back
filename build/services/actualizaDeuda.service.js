@@ -22,6 +22,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // param6: valor2_alic_iva_multa
 // param7: valor3_tasa_honorarios
 // param8: valor4_monto_fijo_recargo
+function trunc(x, posiciones = 0) {
+  var s = x.toString();
+  var decimalLength = s.indexOf('.') + 1;
+  var numStr = s.substr(0, decimalLength + posiciones);
+  return Number(numStr);
+}
+
 var _default = {
   actualizaDeuda: async (deuda_historica, id_tipo_actualizacion, fecha_mora, id_iva, id_empresa, id_deudor) => {
     return new Promise(async (resolve, reject) => {
@@ -62,7 +69,7 @@ var _default = {
           type: _sequelize.QueryTypes.SELECT
         });
         const deuda_actualizada = deuda_historica + parseFloat(recargo[0].interes);
-        resolve(deuda_actualizada);
+        resolve(trunc(deuda_actualizada, 2));
       } catch (error) {
         console.log(error);
       }

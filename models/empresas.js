@@ -390,6 +390,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(100),
       allowNull: true
     },
+    logo: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
     aux1: {
       type: DataTypes.STRING(100),
       allowNull: true
