@@ -5,6 +5,11 @@ import servidor from './config/server/Servidor'
 import cronService from './services/cron.service'
 import moment from 'moment'
 
+// import baseDiscador from './services/baseDiscador'
+
+// console.log(baseDiscador.generaBase(41, 1, 221, 1, 999999, 20000, 30000, 44, 44, 0, 0, 0, 0, 21000, 29000, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, 
+//     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'Mora1', 'Mora3', 'Mora2', 'Mora2', 'Masculino', 'Masculino', '', ''))
+
 moment.tz.setDefault('UTC');
 
 const server = new servidor()
