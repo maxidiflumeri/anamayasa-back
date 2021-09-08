@@ -95,6 +95,8 @@ var _envio_mail = _interopRequireDefault(require("./envio_mail.routes"));
 
 var _p_template_correos = _interopRequireDefault(require("./p_template_correos.routes"));
 
+var _procesos = _interopRequireDefault(require("./procesos.routes"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const router = (0, _expressPromiseRouter.default)();
@@ -142,5 +144,6 @@ router.use('/gruposProcesos', _grupos_procesos.default);
 router.use('/itemsProcesos', _items_procesos.default);
 router.use('/servicio', _envio_mail.default);
 router.use('/templateCorreos', _p_template_correos.default);
+router.use('/procesos', _procesos.default);
 var _default = router;
 exports.default = _default;

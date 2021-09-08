@@ -14,7 +14,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import { QueryTypes } from 'sequelize'
 // import xlsService from '../../services/exportXls.service'
 // const sequelize = new Sequelize(constantes.DB.database, constantes.DB.username, constantes.DB.password, constantes.DB);
-const sequelize = new _sequelize.Sequelize(_constantes.default.DB); // sequelize.query('EXEC sp_deudor 38802635', {type: QueryTypes.SELECT}).then(resultado => {
+const sequelize = new _sequelize.Sequelize(_constantes.default.DB); // sequelize.query('EXEC sp_deudor 44,44,41', {type: QueryTypes.SELECT}).then(resultado => {
+//     console.log('entrooooo')
+//     console.log(resultado.length)
 //     const sheetNames = ['deudor', 'telefonos', 'mails', 'direcciones', 'facturas']
 //     const sheetColumns = []
 //     const objectKeys = []

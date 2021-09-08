@@ -11,13 +11,17 @@ var _index = _interopRequireDefault(require("../models/index"));
 
 var _envioMail = _interopRequireDefault(require("../services/envioMail.service"));
 
+var _axios = _interopRequireDefault(require("axios"));
+
+var _moment = _interopRequireDefault(require("moment"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 async function generarTareas() {
   try {
     let tareas = await _index.default.tareas.findAll();
 
-    _nodeCron.default.schedule('53 11 * * *', () => {
+    _nodeCron.default.schedule('30 06 * * *', () => {
       let arrayTareas = _nodeCron.default.getTasks();
 
       arrayTareas.forEach(tarea => {
@@ -31,13 +35,21 @@ async function generarTareas() {
 }
 
 function generoTareas(tareas) {
-  console.log('entro a la funcion generar y recibo las tareas');
-  tareas.forEach(tarea => {
+  tareas.forEach(async tarea => {
     try {
-      console.log('genero tarea ' + tarea.id_tarea);
-
       _nodeCron.default.schedule(tarea.patron, async () => {
-        let resultado = await _envioMail.default.enviarMail('maximd@anamayasa.com.ar', 'Diflu2020', tarea.destinatario1, tarea.asunto, tarea.cuerpo, null);
+        if (tarea.proceso == 'API') {
+          try {
+            let horario = _moment.default.tz((0, _moment.default)(), 'America/Buenos_Aires').format('DD/MM/YYYY HH:mm');
+
+            await _axios.default.get('https://www.anamayasa.com/neotel/neoapi/webservice.asmx/Login?DEVICE=SIP/MaxiExterno2&USUARIO=1709&CLAVE=33689563');
+            await _envioMail.default.enviarMail('maximd@anamayasa.com.ar', 'Diflu2020', tarea.destinatario1, 'LOGUEO EXITOSO', `Horario de Logueo: ${horario}`, null);
+          } catch (error) {
+            await _envioMail.default.enviarMail('maximd@anamayasa.com.ar', 'Diflu2020', tarea.destinatario1, 'LOGUEO ERRONEO', error.message, null);
+          }
+        } else {
+          await _envioMail.default.enviarMail('maximd@anamayasa.com.ar', 'Diflu2020', tarea.destinatario1, tarea.asunto, tarea.cuerpo, null);
+        }
       });
     } catch (error) {
       console.log("errorrrrrr");

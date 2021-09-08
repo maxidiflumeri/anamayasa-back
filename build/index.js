@@ -13,6 +13,9 @@ var _moment = _interopRequireDefault(require("moment"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //import libreria para cambiar colores en la consola
+// import baseDiscador from './services/baseDiscador'
+// console.log(baseDiscador.generaBase(41, 1, 221, 1, 999999, 20000, 30000, 44, 44, 0, 0, 0, 0, 21000, 29000, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, 
+//     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'Mora1', 'Mora3', 'Mora2', 'Mora2', 'Masculino', 'Masculino', '', ''))
 _moment.default.tz.setDefault('UTC');
 
 const server = new _Servidor.default();

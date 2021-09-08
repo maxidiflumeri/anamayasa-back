@@ -22,7 +22,7 @@ app.listen(app.get('port'), async ()=>{
     console.log('servidor escuchando en puerto ' + app.get('port'))
     try{
         await connection.authenticate()                
-        console.log('Nos hemos conectado a la base de datos exitosamente'.bgGreen.black)               
+        console.log('Nos hemos conectado a la base de datos exitosamente'.bgGreen.black)                       
     }catch(error){        
         console.log('Error al conectar a la base de datos'.bgRed.white)
     }

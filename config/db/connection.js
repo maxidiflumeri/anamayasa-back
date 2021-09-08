@@ -6,7 +6,9 @@ import constantes from '../shared/constantes.js'
 const sequelize = new Sequelize(constantes.DB);
 
 
-// sequelize.query('EXEC sp_deudor 38802635', {type: QueryTypes.SELECT}).then(resultado => {
+// sequelize.query('EXEC sp_deudor 44,44,41', {type: QueryTypes.SELECT}).then(resultado => {
+//     console.log('entrooooo')
+//     console.log(resultado.length)
 //     const sheetNames = ['deudor', 'telefonos', 'mails', 'direcciones', 'facturas']
 //     const sheetColumns = []
 //     const objectKeys = []

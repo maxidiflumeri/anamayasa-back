@@ -11,22 +11,14 @@ var _path = _interopRequireDefault(require("path"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function crearHoja(workSheetColumnName, data) {
-  const workSheetData = [data, workSheetColumnName];
-
-  const workSheet = _xlsx.default.utils.aoa_to_sheet(workSheetData);
-
-  return workSheet;
-}
-
-function exportarExcel(workSheetName, workSheetColumnName, data, filePath) {
+function exportarExcel(workSheetName, data, filePath) {
   const workBook = _xlsx.default.utils.book_new();
 
   for (let index = 0; index < data.length; index++) {
     const objeto = data[index];
-    const columns = workSheetColumnName[index];
     const sheetName = workSheetName[index];
-    let workSheet = crearHoja(objeto, columns);
+
+    const workSheet = _xlsx.default.utils.json_to_sheet(objeto);
 
     _xlsx.default.utils.book_append_sheet(workBook, workSheet, sheetName);
   }
