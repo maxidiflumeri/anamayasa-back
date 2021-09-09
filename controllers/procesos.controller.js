@@ -10,9 +10,9 @@ class procesosController {
 
     async generaBaseDiscador(req, res, next) {
         try {
-            await baseDiscadorService.generaBase(req.query)
-            var file = fs.createReadStream(`./files/contactos.xlsx`)
-            var stat = fs.statSync(`./files/contactos.xlsx`)
+            let response = await baseDiscadorService.generaBase(req.query)
+            var file = fs.createReadStream(`./files/bases/emp${response}/contactos.xlsx`)
+            var stat = fs.statSync(`./files/bases/emp${response}/contactos.xlsx`)
             res.setHeader('Content-Length', stat.size)
             res.setHeader('Content-Type', 'application/vnd.openxmlformats')
             res.setHeader('Content-Disposition', `attachment; filename=contactos.xlsx`)
@@ -39,9 +39,9 @@ class procesosController {
 
     async generaArchivoUsoMultiple(req, res, next) {
         try {
-            await archivoUsoMultipleService.generaArchivo(req.query)
-            var file = fs.createReadStream(`./files/${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`)
-            var stat = fs.statSync(`./files/${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`)
+            let response = await archivoUsoMultipleService.generaArchivo(req.query)
+            var file = fs.createReadStream(`./files/ArchivoUsoMultiples/emp${response}/${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`)
+            var stat = fs.statSync(`./files/ArchivoUsoMultiples/emp${response}/${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`)
             res.setHeader('Content-Length', stat.size)
             res.setHeader('Content-Type', 'application/vnd.openxmlformats')
             res.setHeader('Content-Disposition', `attachment; filename=${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`)

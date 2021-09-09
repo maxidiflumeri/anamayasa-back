@@ -9,6 +9,10 @@ var _connection = _interopRequireDefault(require("../config/db/connection"));
 
 var _exportXls = _interopRequireDefault(require("./exportXls.service"));
 
+var _fs = _interopRequireDefault(require("fs"));
+
+var _moment = _interopRequireDefault(require("moment"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 let modificaCelulares = (base, celIplan, celIplanLc) => {
@@ -54,6 +58,18 @@ var _default = {
     let remesa_omite_hasta = queryParams.remesa_omite_hasta;
     let politica_omite_desde = queryParams.politica_omite_desde;
     let politica_omite_hasta = queryParams.politica_omite_hasta;
+    let id_deudor_desde = queryParams.id_deudor_desde;
+    let id_deudor_hasta = queryParams.id_deudor_hasta;
+    let id_deudor_omite_desde = queryParams.id_deudor_omite_desde;
+    let id_deudor_omite_hasta = queryParams.id_deudor_omite_hasta;
+    let fecha_cierre_desde = queryParams.fecha_cierre_desde == '' ? '2000-01-01' : queryParams.fecha_cierre_desde;
+    let fecha_cierre_hasta = queryParams.fecha_cierre_hasta == '' ? (0, _moment.default)().format('YYYY-MM-DD') : queryParams.fecha_cierre_hasta;
+    let fecha_cierre_omite_desde = queryParams.fecha_cierre_omite_desde;
+    let fecha_cierre_omite_hasta = queryParams.fecha_cierre_omite_hasta;
+    let fecha_recepcion_desde = queryParams.fecha_recepcion_desde == '' ? '2000-01-01' : queryParams.fecha_recepcion_desde;
+    let fecha_recepcion_hasta = queryParams.fecha_recepcion_hasta == '' ? (0, _moment.default)().format('YYYY-MM-DD') : queryParams.fecha_recepcion_hasta;
+    let fecha_recepcion_omite_desde = queryParams.fecha_recepcion_omite_desde;
+    let fecha_recepcion_omite_hasta = queryParams.fecha_recepcion_omite_hasta;
     let telEfectivos = queryParams.telEfectivos;
     let celIplan = queryParams.celIplan;
     let celIplanLc = queryParams.celIplanLc;
@@ -258,433 +274,454 @@ var _default = {
     let aux50_hasta = queryParams.aux50_hasta;
     let aux50_omite_desde = queryParams.aux50_omite_desde;
     let aux50_omite_hasta = queryParams.aux50_omite_hasta;
-    let query = `SELECT t.telefono as telefono1, '' AS telefono2, '' AS telefono3, '' AS telefono4, '' AS telefono5,  '' AS telefono6,  '' AS telefono7, '' AS telefono8, 
-                            t.id_deudor AS data, d.nro_cliente1 AS campo1, d.nro_cliente2 AS campo2, d.deuda_historica AS campo3, '' AS campo4, '' AS campo5, '' AS campo6,
-                            '' AS campo7, '' AS campo8, '' AS campo9, '' AS campo10
-                    FROM telefonos t 
-                    INNER JOIN deudores d ON t.id_deudor = d.id_deudor 
-                    WHERE   d.id_empresa = ${id_empresa} AND
-                            d.id_situacion between ${id_situacion_desde} AND ${id_situacion_hasta} AND d.id_situacion not between ${id_situacion_omite_desde} AND ${id_situacion_omite_hasta} AND
-                            d.id_gestion between ${id_gestion_desde} AND ${id_gestion_hasta} AND d.id_gestion not between ${id_gestion_omite_desde} AND ${id_gestion_omite_hasta} AND
-                            d.remesa between ${remesa_desde} AND ${remesa_hasta} AND d.remesa not between ${remesa_omite_desde} AND ${remesa_omite_hasta} AND
-                            d.deuda_historica between ${deuda_desde} AND ${deuda_hasta} AND d.deuda_historica not between ${deuda_omite_desde} AND ${deuda_omite_hasta} AND
-                            d.id_politica between ${politica_desde} AND ${politica_hasta} AND d.id_politica not between ${politica_omite_desde} AND ${politica_omite_hasta} `; // AND d.fecha_cierra > '${moment().format('YYYY-MM-DD')}'
+    let queryWhere = '';
+
+    if (id_empresa == 0) {
+      queryWhere = `WHERE d.id_empresa between ${id_empresa} AND 99999 AND
+            d.id_situacion between ${id_situacion_desde} AND ${id_situacion_hasta} AND d.id_situacion not between ${id_situacion_omite_desde} AND ${id_situacion_omite_hasta} AND
+            d.id_gestion between ${id_gestion_desde} AND ${id_gestion_hasta} AND d.id_gestion not between ${id_gestion_omite_desde} AND ${id_gestion_omite_hasta} AND
+            d.remesa between ${remesa_desde} AND ${remesa_hasta} AND d.remesa not between ${remesa_omite_desde} AND ${remesa_omite_hasta} AND
+            d.deuda_historica between ${deuda_desde} AND ${deuda_hasta} AND d.deuda_historica not between ${deuda_omite_desde} AND ${deuda_omite_hasta} AND
+            d.id_politica between ${politica_desde} AND ${politica_hasta} AND d.id_politica not between ${politica_omite_desde} AND ${politica_omite_hasta} AND
+            d.id_deudor between ${id_deudor_desde} AND ${id_deudor_hasta} AND d.id_deudor not between ${id_deudor_omite_desde} AND ${id_deudor_omite_hasta} AND
+            d.fecha_cierra between '${fecha_cierre_desde}' and '${fecha_cierre_hasta}' and d.fecha_cierra not between '${fecha_cierre_omite_desde}' and '${fecha_cierre_omite_hasta}' AND
+            d.fecha_recepcion between '${fecha_recepcion_desde}' and '${fecha_recepcion_hasta}' and d.fecha_recepcion not between '${fecha_recepcion_omite_desde}' and '${fecha_recepcion_omite_hasta}' `;
+    } else {
+      queryWhere = `WHERE d.id_empresa = ${id_empresa} AND
+            d.id_situacion between ${id_situacion_desde} AND ${id_situacion_hasta} AND d.id_situacion not between ${id_situacion_omite_desde} AND ${id_situacion_omite_hasta} AND
+            d.id_gestion between ${id_gestion_desde} AND ${id_gestion_hasta} AND d.id_gestion not between ${id_gestion_omite_desde} AND ${id_gestion_omite_hasta} AND
+            d.remesa between ${remesa_desde} AND ${remesa_hasta} AND d.remesa not between ${remesa_omite_desde} AND ${remesa_omite_hasta} AND
+            d.deuda_historica between ${deuda_desde} AND ${deuda_hasta} AND d.deuda_historica not between ${deuda_omite_desde} AND ${deuda_omite_hasta} AND
+            d.id_politica between ${politica_desde} AND ${politica_hasta} AND d.id_politica not between ${politica_omite_desde} AND ${politica_omite_hasta} AND
+            d.id_deudor between ${id_deudor_desde} AND ${id_deudor_hasta} AND d.id_deudor not between ${id_deudor_omite_desde} AND ${id_deudor_omite_hasta} AND
+            d.fecha_cierra between '${fecha_cierre_desde}' and '${fecha_cierre_hasta}' and d.fecha_cierra not between '${fecha_cierre_omite_desde}' and '${fecha_cierre_omite_hasta}' AND
+            d.fecha_recepcion between '${fecha_recepcion_desde}' and '${fecha_recepcion_hasta}' and d.fecha_recepcion not between '${fecha_recepcion_omite_desde}' and '${fecha_recepcion_omite_hasta}' `;
+    }
 
     if (telEfectivos == "true") {
-      query = query + ` AND t.efectivo = 1 `;
+      queryWhere = queryWhere + ` AND t.efectivo = 1 `;
     }
 
     if (aux1_desde && aux1_hasta) {
       if (aux1_omite_desde && aux1_omite_hasta) {
-        query = query + ` AND d.aux1 BETWEEN '${aux1_desde}' AND '${aux1_hasta}' AND d.aux1 NOT BETWEEN '${aux1_omite_desde}' AND '${aux1_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux1 BETWEEN '${aux1_desde}' AND '${aux1_hasta}' AND d.aux1 NOT BETWEEN '${aux1_omite_desde}' AND '${aux1_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux1 BETWEEN '${aux1_desde}' AND '${aux1_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux1 BETWEEN '${aux1_desde}' AND '${aux1_hasta}'`;
       }
     }
 
     if (aux2_desde && aux2_hasta) {
       if (aux2_omite_desde && aux2_omite_hasta) {
-        query = query + ` AND d.aux2 BETWEEN '${aux2_desde}' AND '${aux2_hasta}' AND d.aux2 NOT BETWEEN '${aux2_omite_desde}' AND '${aux2_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux2 BETWEEN '${aux2_desde}' AND '${aux2_hasta}' AND d.aux2 NOT BETWEEN '${aux2_omite_desde}' AND '${aux2_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux2 BETWEEN '${aux2_desde}' AND '${aux2_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux2 BETWEEN '${aux2_desde}' AND '${aux2_hasta}'`;
       }
     }
 
     if (aux3_desde && aux3_hasta) {
       if (aux3_omite_desde && aux3_omite_hasta) {
-        query = query + ` AND d.aux3 BETWEEN '${aux3_desde}' AND '${aux3_hasta}' AND d.aux3 NOT BETWEEN '${aux3_omite_desde}' AND '${aux3_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux3 BETWEEN '${aux3_desde}' AND '${aux3_hasta}' AND d.aux3 NOT BETWEEN '${aux3_omite_desde}' AND '${aux3_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux3 BETWEEN '${aux3_desde}' AND '${aux3_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux3 BETWEEN '${aux3_desde}' AND '${aux3_hasta}'`;
       }
     }
 
     if (aux4_desde && aux4_hasta) {
       if (aux4_omite_desde && aux4_omite_hasta) {
-        query = query + ` AND d.aux4 BETWEEN '${aux4_desde}' AND '${aux4_hasta}' AND d.aux4 NOT BETWEEN '${aux4_omite_desde}' AND '${aux4_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux4 BETWEEN '${aux4_desde}' AND '${aux4_hasta}' AND d.aux4 NOT BETWEEN '${aux4_omite_desde}' AND '${aux4_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux4 BETWEEN '${aux4_desde}' AND '${aux4_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux4 BETWEEN '${aux4_desde}' AND '${aux4_hasta}'`;
       }
     }
 
     if (aux5_desde && aux5_hasta) {
       if (aux5_omite_desde && aux5_omite_hasta) {
-        query = query + ` AND d.aux5 BETWEEN '${aux5_desde}' AND '${aux5_hasta}' AND d.aux5 NOT BETWEEN '${aux5_omite_desde}' AND '${aux5_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux5 BETWEEN '${aux5_desde}' AND '${aux5_hasta}' AND d.aux5 NOT BETWEEN '${aux5_omite_desde}' AND '${aux5_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux5 BETWEEN '${aux5_desde}' AND '${aux5_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux5 BETWEEN '${aux5_desde}' AND '${aux5_hasta}'`;
       }
     }
 
     if (aux6_desde && aux6_hasta) {
       if (aux6_omite_desde && aux6_omite_hasta) {
-        query = query + ` AND d.aux6 BETWEEN '${aux6_desde}' AND '${aux6_hasta}' AND d.aux6 NOT BETWEEN '${aux6_omite_desde}' AND '${aux6_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux6 BETWEEN '${aux6_desde}' AND '${aux6_hasta}' AND d.aux6 NOT BETWEEN '${aux6_omite_desde}' AND '${aux6_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux6 BETWEEN '${aux6_desde}' AND '${aux6_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux6 BETWEEN '${aux6_desde}' AND '${aux6_hasta}'`;
       }
     }
 
     if (aux7_desde && aux7_hasta) {
       if (aux7_omite_desde && aux7_omite_hasta) {
-        query = query + ` AND d.aux7 BETWEEN '${aux7_desde}' AND '${aux7_hasta}' AND d.aux7 NOT BETWEEN '${aux7_omite_desde}' AND '${aux7_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux7 BETWEEN '${aux7_desde}' AND '${aux7_hasta}' AND d.aux7 NOT BETWEEN '${aux7_omite_desde}' AND '${aux7_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux7 BETWEEN '${aux7_desde}' AND '${aux7_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux7 BETWEEN '${aux7_desde}' AND '${aux7_hasta}'`;
       }
     }
 
     if (aux8_desde && aux8_hasta) {
       if (aux8_omite_desde && aux8_omite_hasta) {
-        query = query + ` AND d.aux8 BETWEEN '${aux8_desde}' AND '${aux8_hasta}' AND d.aux8 NOT BETWEEN '${aux8_omite_desde}' AND '${aux8_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux8 BETWEEN '${aux8_desde}' AND '${aux8_hasta}' AND d.aux8 NOT BETWEEN '${aux8_omite_desde}' AND '${aux8_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux8 BETWEEN '${aux8_desde}' AND '${aux8_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux8 BETWEEN '${aux8_desde}' AND '${aux8_hasta}'`;
       }
     }
 
     if (aux9_desde && aux9_hasta) {
       if (aux9_omite_desde && aux9_omite_hasta) {
-        query = query + ` AND d.aux9 BETWEEN '${aux9_desde}' AND '${aux9_hasta}' AND d.aux9 NOT BETWEEN '${aux9_omite_desde}' AND '${aux9_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux9 BETWEEN '${aux9_desde}' AND '${aux9_hasta}' AND d.aux9 NOT BETWEEN '${aux9_omite_desde}' AND '${aux9_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux9 BETWEEN '${aux9_desde}' AND '${aux9_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux9 BETWEEN '${aux9_desde}' AND '${aux9_hasta}'`;
       }
     }
 
     if (aux10_desde && aux10_hasta) {
       if (aux10_omite_desde && aux10_omite_hasta) {
-        query = query + ` AND d.aux10 BETWEEN '${aux10_desde}' AND '${aux10_hasta}' AND d.aux10 NOT BETWEEN '${aux10_omite_desde}' AND '${aux10_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux10 BETWEEN '${aux10_desde}' AND '${aux10_hasta}' AND d.aux10 NOT BETWEEN '${aux10_omite_desde}' AND '${aux10_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux10 BETWEEN '${aux10_desde}' AND '${aux10_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux10 BETWEEN '${aux10_desde}' AND '${aux10_hasta}'`;
       }
     }
 
     if (aux11_desde && aux11_hasta) {
       if (aux11_omite_desde && aux11_omite_hasta) {
-        query = query + ` AND d.aux11 BETWEEN '${aux11_desde}' AND '${aux11_hasta}' AND d.aux11 NOT BETWEEN '${aux11_omite_desde}' AND '${aux11_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux11 BETWEEN '${aux11_desde}' AND '${aux11_hasta}' AND d.aux11 NOT BETWEEN '${aux11_omite_desde}' AND '${aux11_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux11 BETWEEN '${aux11_desde}' AND '${aux11_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux11 BETWEEN '${aux11_desde}' AND '${aux11_hasta}'`;
       }
     }
 
     if (aux12_desde && aux12_hasta) {
       if (aux12_omite_desde && aux12_omite_hasta) {
-        query = query + ` AND d.aux12 BETWEEN '${aux12_desde}' AND '${aux12_hasta}' AND d.aux12 NOT BETWEEN '${aux12_omite_desde}' AND '${aux12_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux12 BETWEEN '${aux12_desde}' AND '${aux12_hasta}' AND d.aux12 NOT BETWEEN '${aux12_omite_desde}' AND '${aux12_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux12 BETWEEN '${aux12_desde}' AND '${aux12_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux12 BETWEEN '${aux12_desde}' AND '${aux12_hasta}'`;
       }
     }
 
     if (aux13_desde && aux13_hasta) {
       if (aux13_omite_desde && aux13_omite_hasta) {
-        query = query + ` AND d.aux13 BETWEEN '${aux13_desde}' AND '${aux13_hasta}' AND d.aux13 NOT BETWEEN '${aux13_omite_desde}' AND '${aux13_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux13 BETWEEN '${aux13_desde}' AND '${aux13_hasta}' AND d.aux13 NOT BETWEEN '${aux13_omite_desde}' AND '${aux13_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux13 BETWEEN '${aux13_desde}' AND '${aux13_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux13 BETWEEN '${aux13_desde}' AND '${aux13_hasta}'`;
       }
     }
 
     if (aux14_desde && aux14_hasta) {
       if (aux14_omite_desde && aux14_omite_hasta) {
-        query = query + ` AND d.aux14 BETWEEN '${aux14_desde}' AND '${aux14_hasta}' AND d.aux14 NOT BETWEEN '${aux14_omite_desde}' AND '${aux14_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux14 BETWEEN '${aux14_desde}' AND '${aux14_hasta}' AND d.aux14 NOT BETWEEN '${aux14_omite_desde}' AND '${aux14_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux14 BETWEEN '${aux14_desde}' AND '${aux14_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux14 BETWEEN '${aux14_desde}' AND '${aux14_hasta}'`;
       }
     }
 
     if (aux15_desde && aux15_hasta) {
       if (aux15_omite_desde && aux15_omite_hasta) {
-        query = query + ` AND d.aux15 BETWEEN '${aux15_desde}' AND '${aux15_hasta}' AND d.aux15 NOT BETWEEN '${aux15_omite_desde}' AND '${aux15_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux15 BETWEEN '${aux15_desde}' AND '${aux15_hasta}' AND d.aux15 NOT BETWEEN '${aux15_omite_desde}' AND '${aux15_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux15 BETWEEN '${aux15_desde}' AND '${aux15_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux15 BETWEEN '${aux15_desde}' AND '${aux15_hasta}'`;
       }
     }
 
     if (aux16_desde && aux16_hasta) {
       if (aux16_omite_desde && aux16_omite_hasta) {
-        query = query + ` AND d.aux16 BETWEEN '${aux16_desde}' AND '${aux16_hasta}' AND d.aux16 NOT BETWEEN '${aux16_omite_desde}' AND '${aux16_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux16 BETWEEN '${aux16_desde}' AND '${aux16_hasta}' AND d.aux16 NOT BETWEEN '${aux16_omite_desde}' AND '${aux16_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux16 BETWEEN '${aux16_desde}' AND '${aux16_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux16 BETWEEN '${aux16_desde}' AND '${aux16_hasta}'`;
       }
     }
 
     if (aux17_desde && aux17_hasta) {
       if (aux17_omite_desde && aux17_omite_hasta) {
-        query = query + ` AND d.aux17 BETWEEN '${aux17_desde}' AND '${aux17_hasta}' AND d.aux17 NOT BETWEEN '${aux17_omite_desde}' AND '${aux17_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux17 BETWEEN '${aux17_desde}' AND '${aux17_hasta}' AND d.aux17 NOT BETWEEN '${aux17_omite_desde}' AND '${aux17_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux17 BETWEEN '${aux17_desde}' AND '${aux17_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux17 BETWEEN '${aux17_desde}' AND '${aux17_hasta}'`;
       }
     }
 
     if (aux18_desde && aux18_hasta) {
       if (aux18_omite_desde && aux18_omite_hasta) {
-        query = query + ` AND d.aux18 BETWEEN '${aux18_desde}' AND '${aux18_hasta}' AND d.aux18 NOT BETWEEN '${aux18_omite_desde}' AND '${aux18_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux18 BETWEEN '${aux18_desde}' AND '${aux18_hasta}' AND d.aux18 NOT BETWEEN '${aux18_omite_desde}' AND '${aux18_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux18 BETWEEN '${aux18_desde}' AND '${aux18_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux18 BETWEEN '${aux18_desde}' AND '${aux18_hasta}'`;
       }
     }
 
     if (aux19_desde && aux19_hasta) {
       if (aux19_omite_desde && aux19_omite_hasta) {
-        query = query + ` AND d.aux19 BETWEEN '${aux19_desde}' AND '${aux19_hasta}' AND d.aux19 NOT BETWEEN '${aux19_omite_desde}' AND '${aux19_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux19 BETWEEN '${aux19_desde}' AND '${aux19_hasta}' AND d.aux19 NOT BETWEEN '${aux19_omite_desde}' AND '${aux19_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux19 BETWEEN '${aux19_desde}' AND '${aux19_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux19 BETWEEN '${aux19_desde}' AND '${aux19_hasta}'`;
       }
     }
 
     if (aux20_desde && aux20_hasta) {
       if (aux20_omite_desde && aux20_omite_hasta) {
-        query = query + ` AND d.aux20 BETWEEN '${aux20_desde}' AND '${aux20_hasta}' AND d.aux20 NOT BETWEEN '${aux20_omite_desde}' AND '${aux20_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux20 BETWEEN '${aux20_desde}' AND '${aux20_hasta}' AND d.aux20 NOT BETWEEN '${aux20_omite_desde}' AND '${aux20_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux20 BETWEEN '${aux20_desde}' AND '${aux20_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux20 BETWEEN '${aux20_desde}' AND '${aux20_hasta}'`;
       }
     }
 
     if (aux21_desde && aux21_hasta) {
       if (aux21_omite_desde && aux21_omite_hasta) {
-        query = query + ` AND d.aux21 BETWEEN '${aux21_desde}' AND '${aux21_hasta}' AND d.aux21 NOT BETWEEN '${aux21_omite_desde}' AND '${aux21_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux21 BETWEEN '${aux21_desde}' AND '${aux21_hasta}' AND d.aux21 NOT BETWEEN '${aux21_omite_desde}' AND '${aux21_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux21 BETWEEN '${aux21_desde}' AND '${aux21_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux21 BETWEEN '${aux21_desde}' AND '${aux21_hasta}'`;
       }
     }
 
     if (aux22_desde && aux22_hasta) {
       if (aux22_omite_desde && aux22_omite_hasta) {
-        query = query + ` AND d.aux22 BETWEEN '${aux22_desde}' AND '${aux22_hasta}' AND d.aux22 NOT BETWEEN '${aux22_omite_desde}' AND '${aux22_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux22 BETWEEN '${aux22_desde}' AND '${aux22_hasta}' AND d.aux22 NOT BETWEEN '${aux22_omite_desde}' AND '${aux22_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux22 BETWEEN '${aux22_desde}' AND '${aux22_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux22 BETWEEN '${aux22_desde}' AND '${aux22_hasta}'`;
       }
     }
 
     if (aux23_desde && aux23_hasta) {
       if (aux23_omite_desde && aux23_omite_hasta) {
-        query = query + ` AND d.aux23 BETWEEN '${aux23_desde}' AND '${aux23_hasta}' AND d.aux23 NOT BETWEEN '${aux23_omite_desde}' AND '${aux23_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux23 BETWEEN '${aux23_desde}' AND '${aux23_hasta}' AND d.aux23 NOT BETWEEN '${aux23_omite_desde}' AND '${aux23_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux23 BETWEEN '${aux23_desde}' AND '${aux23_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux23 BETWEEN '${aux23_desde}' AND '${aux23_hasta}'`;
       }
     }
 
     if (aux24_desde && aux24_hasta) {
       if (aux24_omite_desde && aux24_omite_hasta) {
-        query = query + ` AND d.aux24 BETWEEN '${aux24_desde}' AND '${aux24_hasta}' AND d.aux24 NOT BETWEEN '${aux24_omite_desde}' AND '${aux24_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux24 BETWEEN '${aux24_desde}' AND '${aux24_hasta}' AND d.aux24 NOT BETWEEN '${aux24_omite_desde}' AND '${aux24_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux24 BETWEEN '${aux24_desde}' AND '${aux24_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux24 BETWEEN '${aux24_desde}' AND '${aux24_hasta}'`;
       }
     }
 
     if (aux25_desde && aux25_hasta) {
       if (aux25_omite_desde && aux25_omite_hasta) {
-        query = query + ` AND d.aux25 BETWEEN '${aux25_desde}' AND '${aux25_hasta}' AND d.aux25 NOT BETWEEN '${aux25_omite_desde}' AND '${aux25_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux25 BETWEEN '${aux25_desde}' AND '${aux25_hasta}' AND d.aux25 NOT BETWEEN '${aux25_omite_desde}' AND '${aux25_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux25 BETWEEN '${aux25_desde}' AND '${aux25_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux25 BETWEEN '${aux25_desde}' AND '${aux25_hasta}'`;
       }
     }
 
     if (aux26_desde && aux26_hasta) {
       if (aux26_omite_desde && aux26_omite_hasta) {
-        query = query + ` AND d.aux26 BETWEEN '${aux26_desde}' AND '${aux26_hasta}' AND d.aux26 NOT BETWEEN '${aux26_omite_desde}' AND '${aux26_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux26 BETWEEN '${aux26_desde}' AND '${aux26_hasta}' AND d.aux26 NOT BETWEEN '${aux26_omite_desde}' AND '${aux26_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux26 BETWEEN '${aux26_desde}' AND '${aux26_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux26 BETWEEN '${aux26_desde}' AND '${aux26_hasta}'`;
       }
     }
 
     if (aux27_desde && aux27_hasta) {
       if (aux27_omite_desde && aux27_omite_hasta) {
-        query = query + ` AND d.aux27 BETWEEN '${aux27_desde}' AND '${aux27_hasta}' AND d.aux27 NOT BETWEEN '${aux27_omite_desde}' AND '${aux27_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux27 BETWEEN '${aux27_desde}' AND '${aux27_hasta}' AND d.aux27 NOT BETWEEN '${aux27_omite_desde}' AND '${aux27_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux27 BETWEEN '${aux27_desde}' AND '${aux27_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux27 BETWEEN '${aux27_desde}' AND '${aux27_hasta}'`;
       }
     }
 
     if (aux28_desde && aux28_hasta) {
       if (aux28_omite_desde && aux28_omite_hasta) {
-        query = query + ` AND d.aux28 BETWEEN '${aux28_desde}' AND '${aux28_hasta}' AND d.aux28 NOT BETWEEN '${aux28_omite_desde}' AND '${aux28_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux28 BETWEEN '${aux28_desde}' AND '${aux28_hasta}' AND d.aux28 NOT BETWEEN '${aux28_omite_desde}' AND '${aux28_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux28 BETWEEN '${aux28_desde}' AND '${aux28_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux28 BETWEEN '${aux28_desde}' AND '${aux28_hasta}'`;
       }
     }
 
     if (aux29_desde && aux29_hasta) {
       if (aux29_omite_desde && aux29_omite_hasta) {
-        query = query + ` AND d.aux29 BETWEEN '${aux29_desde}' AND '${aux29_hasta}' AND d.aux29 NOT BETWEEN '${aux29_omite_desde}' AND '${aux29_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux29 BETWEEN '${aux29_desde}' AND '${aux29_hasta}' AND d.aux29 NOT BETWEEN '${aux29_omite_desde}' AND '${aux29_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux29 BETWEEN '${aux29_desde}' AND '${aux29_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux29 BETWEEN '${aux29_desde}' AND '${aux29_hasta}'`;
       }
     }
 
     if (aux30_desde && aux30_hasta) {
       if (aux30_omite_desde && aux30_omite_hasta) {
-        query = query + ` AND d.aux30 BETWEEN '${aux30_desde}' AND '${aux30_hasta}' AND d.aux30 NOT BETWEEN '${aux30_omite_desde}' AND '${aux30_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux30 BETWEEN '${aux30_desde}' AND '${aux30_hasta}' AND d.aux30 NOT BETWEEN '${aux30_omite_desde}' AND '${aux30_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux30 BETWEEN '${aux30_desde}' AND '${aux30_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux30 BETWEEN '${aux30_desde}' AND '${aux30_hasta}'`;
       }
     }
 
     if (aux31_desde && aux31_hasta) {
       if (aux31_omite_desde && aux31_omite_hasta) {
-        query = query + ` AND d.aux31 BETWEEN '${aux31_desde}' AND '${aux31_hasta}' AND d.aux31 NOT BETWEEN '${aux31_omite_desde}' AND '${aux31_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux31 BETWEEN '${aux31_desde}' AND '${aux31_hasta}' AND d.aux31 NOT BETWEEN '${aux31_omite_desde}' AND '${aux31_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux31 BETWEEN '${aux31_desde}' AND '${aux31_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux31 BETWEEN '${aux31_desde}' AND '${aux31_hasta}'`;
       }
     }
 
     if (aux32_desde && aux32_hasta) {
       if (aux32_omite_desde && aux32_omite_hasta) {
-        query = query + ` AND d.aux32 BETWEEN '${aux32_desde}' AND '${aux32_hasta}' AND d.aux32 NOT BETWEEN '${aux32_omite_desde}' AND '${aux32_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux32 BETWEEN '${aux32_desde}' AND '${aux32_hasta}' AND d.aux32 NOT BETWEEN '${aux32_omite_desde}' AND '${aux32_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux32 BETWEEN '${aux32_desde}' AND '${aux32_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux32 BETWEEN '${aux32_desde}' AND '${aux32_hasta}'`;
       }
     }
 
     if (aux33_desde && aux33_hasta) {
       if (aux33_omite_desde && aux33_omite_hasta) {
-        query = query + ` AND d.aux33 BETWEEN '${aux33_desde}' AND '${aux33_hasta}' AND d.aux33 NOT BETWEEN '${aux33_omite_desde}' AND '${aux33_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux33 BETWEEN '${aux33_desde}' AND '${aux33_hasta}' AND d.aux33 NOT BETWEEN '${aux33_omite_desde}' AND '${aux33_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux33 BETWEEN '${aux33_desde}' AND '${aux33_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux33 BETWEEN '${aux33_desde}' AND '${aux33_hasta}'`;
       }
     }
 
     if (aux34_desde && aux34_hasta) {
       if (aux34_omite_desde && aux34_omite_hasta) {
-        query = query + ` AND d.aux34 BETWEEN '${aux34_desde}' AND '${aux34_hasta}' AND d.aux34 NOT BETWEEN '${aux34_omite_desde}' AND '${aux34_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux34 BETWEEN '${aux34_desde}' AND '${aux34_hasta}' AND d.aux34 NOT BETWEEN '${aux34_omite_desde}' AND '${aux34_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux34 BETWEEN '${aux34_desde}' AND '${aux34_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux34 BETWEEN '${aux34_desde}' AND '${aux34_hasta}'`;
       }
     }
 
     if (aux35_desde && aux35_hasta) {
       if (aux35_omite_desde && aux35_omite_hasta) {
-        query = query + ` AND d.aux35 BETWEEN '${aux35_desde}' AND '${aux35_hasta}' AND d.aux35 NOT BETWEEN '${aux35_omite_desde}' AND '${aux35_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux35 BETWEEN '${aux35_desde}' AND '${aux35_hasta}' AND d.aux35 NOT BETWEEN '${aux35_omite_desde}' AND '${aux35_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux35 BETWEEN '${aux35_desde}' AND '${aux35_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux35 BETWEEN '${aux35_desde}' AND '${aux35_hasta}'`;
       }
     }
 
     if (aux36_desde && aux36_hasta) {
       if (aux36_omite_desde && aux36_omite_hasta) {
-        query = query + ` AND d.aux36 BETWEEN '${aux36_desde}' AND '${aux36_hasta}' AND d.aux36 NOT BETWEEN '${aux36_omite_desde}' AND '${aux36_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux36 BETWEEN '${aux36_desde}' AND '${aux36_hasta}' AND d.aux36 NOT BETWEEN '${aux36_omite_desde}' AND '${aux36_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux36 BETWEEN '${aux36_desde}' AND '${aux36_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux36 BETWEEN '${aux36_desde}' AND '${aux36_hasta}'`;
       }
     }
 
     if (aux37_desde && aux37_hasta) {
       if (aux37_omite_desde && aux37_omite_hasta) {
-        query = query + ` AND d.aux37 BETWEEN '${aux37_desde}' AND '${aux37_hasta}' AND d.aux37 NOT BETWEEN '${aux37_omite_desde}' AND '${aux37_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux37 BETWEEN '${aux37_desde}' AND '${aux37_hasta}' AND d.aux37 NOT BETWEEN '${aux37_omite_desde}' AND '${aux37_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux37 BETWEEN '${aux37_desde}' AND '${aux37_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux37 BETWEEN '${aux37_desde}' AND '${aux37_hasta}'`;
       }
     }
 
     if (aux38_desde && aux38_hasta) {
       if (aux38_omite_desde && aux38_omite_hasta) {
-        query = query + ` AND d.aux38 BETWEEN '${aux38_desde}' AND '${aux38_hasta}' AND d.aux38 NOT BETWEEN '${aux38_omite_desde}' AND '${aux38_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux38 BETWEEN '${aux38_desde}' AND '${aux38_hasta}' AND d.aux38 NOT BETWEEN '${aux38_omite_desde}' AND '${aux38_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux38 BETWEEN '${aux38_desde}' AND '${aux38_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux38 BETWEEN '${aux38_desde}' AND '${aux38_hasta}'`;
       }
     }
 
     if (aux39_desde && aux39_hasta) {
       if (aux39_omite_desde && aux39_omite_hasta) {
-        query = query + ` AND d.aux39 BETWEEN '${aux39_desde}' AND '${aux39_hasta}' AND d.aux39 NOT BETWEEN '${aux39_omite_desde}' AND '${aux39_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux39 BETWEEN '${aux39_desde}' AND '${aux39_hasta}' AND d.aux39 NOT BETWEEN '${aux39_omite_desde}' AND '${aux39_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux39 BETWEEN '${aux39_desde}' AND '${aux39_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux39 BETWEEN '${aux39_desde}' AND '${aux39_hasta}'`;
       }
     }
 
     if (aux40_desde && aux40_hasta) {
       if (aux40_omite_desde && aux40_omite_hasta) {
-        query = query + ` AND d.aux40 BETWEEN '${aux40_desde}' AND '${aux40_hasta}' AND d.aux40 NOT BETWEEN '${aux40_omite_desde}' AND '${aux40_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux40 BETWEEN '${aux40_desde}' AND '${aux40_hasta}' AND d.aux40 NOT BETWEEN '${aux40_omite_desde}' AND '${aux40_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux40 BETWEEN '${aux40_desde}' AND '${aux40_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux40 BETWEEN '${aux40_desde}' AND '${aux40_hasta}'`;
       }
     }
 
     if (aux41_desde && aux41_hasta) {
       if (aux41_omite_desde && aux41_omite_hasta) {
-        query = query + ` AND d.aux41 BETWEEN '${aux41_desde}' AND '${aux41_hasta}' AND d.aux41 NOT BETWEEN '${aux41_omite_desde}' AND '${aux41_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux41 BETWEEN '${aux41_desde}' AND '${aux41_hasta}' AND d.aux41 NOT BETWEEN '${aux41_omite_desde}' AND '${aux41_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux41 BETWEEN '${aux41_desde}' AND '${aux41_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux41 BETWEEN '${aux41_desde}' AND '${aux41_hasta}'`;
       }
     }
 
     if (aux42_desde && aux42_hasta) {
       if (aux42_omite_desde && aux42_omite_hasta) {
-        query = query + ` AND d.aux42 BETWEEN '${aux42_desde}' AND '${aux42_hasta}' AND d.aux42 NOT BETWEEN '${aux42_omite_desde}' AND '${aux42_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux42 BETWEEN '${aux42_desde}' AND '${aux42_hasta}' AND d.aux42 NOT BETWEEN '${aux42_omite_desde}' AND '${aux42_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux42 BETWEEN '${aux42_desde}' AND '${aux42_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux42 BETWEEN '${aux42_desde}' AND '${aux42_hasta}'`;
       }
     }
 
     if (aux43_desde && aux43_hasta) {
       if (aux43_omite_desde && aux43_omite_hasta) {
-        query = query + ` AND d.aux43 BETWEEN '${aux43_desde}' AND '${aux43_hasta}' AND d.aux43 NOT BETWEEN '${aux43_omite_desde}' AND '${aux43_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux43 BETWEEN '${aux43_desde}' AND '${aux43_hasta}' AND d.aux43 NOT BETWEEN '${aux43_omite_desde}' AND '${aux43_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux43 BETWEEN '${aux43_desde}' AND '${aux43_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux43 BETWEEN '${aux43_desde}' AND '${aux43_hasta}'`;
       }
     }
 
     if (aux44_desde && aux44_hasta) {
       if (aux44_omite_desde && aux44_omite_hasta) {
-        query = query + ` AND d.aux44 BETWEEN '${aux44_desde}' AND '${aux44_hasta}' AND d.aux44 NOT BETWEEN '${aux44_omite_desde}' AND '${aux44_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux44 BETWEEN '${aux44_desde}' AND '${aux44_hasta}' AND d.aux44 NOT BETWEEN '${aux44_omite_desde}' AND '${aux44_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux44 BETWEEN '${aux44_desde}' AND '${aux44_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux44 BETWEEN '${aux44_desde}' AND '${aux44_hasta}'`;
       }
     }
 
     if (aux45_desde && aux45_hasta) {
       if (aux45_omite_desde && aux45_omite_hasta) {
-        query = query + ` AND d.aux45 BETWEEN '${aux45_desde}' AND '${aux45_hasta}' AND d.aux45 NOT BETWEEN '${aux45_omite_desde}' AND '${aux45_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux45 BETWEEN '${aux45_desde}' AND '${aux45_hasta}' AND d.aux45 NOT BETWEEN '${aux45_omite_desde}' AND '${aux45_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux45 BETWEEN '${aux45_desde}' AND '${aux45_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux45 BETWEEN '${aux45_desde}' AND '${aux45_hasta}'`;
       }
     }
 
     if (aux46_desde && aux46_hasta) {
       if (aux46_omite_desde && aux46_omite_hasta) {
-        query = query + ` AND d.aux46 BETWEEN '${aux46_desde}' AND '${aux46_hasta}' AND d.aux46 NOT BETWEEN '${aux46_omite_desde}' AND '${aux46_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux46 BETWEEN '${aux46_desde}' AND '${aux46_hasta}' AND d.aux46 NOT BETWEEN '${aux46_omite_desde}' AND '${aux46_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux46 BETWEEN '${aux46_desde}' AND '${aux46_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux46 BETWEEN '${aux46_desde}' AND '${aux46_hasta}'`;
       }
     }
 
     if (aux47_desde && aux47_hasta) {
       if (aux47_omite_desde && aux47_omite_hasta) {
-        query = query + ` AND d.aux47 BETWEEN '${aux47_desde}' AND '${aux47_hasta}' AND d.aux47 NOT BETWEEN '${aux47_omite_desde}' AND '${aux47_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux47 BETWEEN '${aux47_desde}' AND '${aux47_hasta}' AND d.aux47 NOT BETWEEN '${aux47_omite_desde}' AND '${aux47_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux47 BETWEEN '${aux47_desde}' AND '${aux47_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux47 BETWEEN '${aux47_desde}' AND '${aux47_hasta}'`;
       }
     }
 
     if (aux48_desde && aux48_hasta) {
       if (aux48_omite_desde && aux48_omite_hasta) {
-        query = query + ` AND d.aux48 BETWEEN '${aux48_desde}' AND '${aux48_hasta}' AND d.aux48 NOT BETWEEN '${aux48_omite_desde}' AND '${aux48_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux48 BETWEEN '${aux48_desde}' AND '${aux48_hasta}' AND d.aux48 NOT BETWEEN '${aux48_omite_desde}' AND '${aux48_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux48 BETWEEN '${aux48_desde}' AND '${aux48_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux48 BETWEEN '${aux48_desde}' AND '${aux48_hasta}'`;
       }
     }
 
     if (aux49_desde && aux49_hasta) {
       if (aux49_omite_desde && aux49_omite_hasta) {
-        query = query + ` AND d.aux49 BETWEEN '${aux49_desde}' AND '${aux49_hasta}' AND d.aux49 NOT BETWEEN '${aux49_omite_desde}' AND '${aux49_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux49 BETWEEN '${aux49_desde}' AND '${aux49_hasta}' AND d.aux49 NOT BETWEEN '${aux49_omite_desde}' AND '${aux49_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux49 BETWEEN '${aux49_desde}' AND '${aux49_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux49 BETWEEN '${aux49_desde}' AND '${aux49_hasta}'`;
       }
     }
 
     if (aux50_desde && aux50_hasta) {
       if (aux50_omite_desde && aux50_omite_hasta) {
-        query = query + ` AND d.aux50 BETWEEN '${aux50_desde}' AND '${aux50_hasta}' AND d.aux50 NOT BETWEEN '${aux50_omite_desde}' AND '${aux50_omite_hasta}' `;
+        queryWhere = queryWhere + ` AND d.aux50 BETWEEN '${aux50_desde}' AND '${aux50_hasta}' AND d.aux50 NOT BETWEEN '${aux50_omite_desde}' AND '${aux50_omite_hasta}' `;
       } else {
-        query = query + ` AND d.aux50 BETWEEN '${aux50_desde}' AND '${aux50_hasta}'`;
+        queryWhere = queryWhere + ` AND d.aux50 BETWEEN '${aux50_desde}' AND '${aux50_hasta}'`;
       }
     }
 
-    query = query + ` ORDER BY NEWID()`;
+    queryWhere = queryWhere + ` ORDER BY NEWID()`;
+    let query = `SELECT t.telefono as telefono1, '' AS telefono2, '' AS telefono3, '' AS telefono4, '' AS telefono5,  '' AS telefono6,  '' AS telefono7, '' AS telefono8, 
+                            t.id_deudor AS data, d.nro_cliente1 AS campo1, d.nro_cliente2 AS campo2, d.deuda_historica AS campo3, '' AS campo4, '' AS campo5, '' AS campo6,
+                            '' AS campo7, '' AS campo8, '' AS campo9, '' AS campo10
+                    FROM telefonos t 
+                    INNER JOIN deudores d ON t.id_deudor = d.id_deudor 
+                    ${queryWhere}`;
     return new Promise(async (resolve, reject) => {
       let sheetNames = ['contactos'];
 
       try {
         let base = await _connection.default.query(query);
-        let baseOk = modificaCelulares(base[0], celIplan, celIplanLc, net2phone);
+        modificaCelulares(base[0], celIplan, celIplanLc, net2phone);
+        let directorio = `${queryParams.id_empresa}_rem${queryParams.remesa_desde}_${(0, _moment.default)().format('YYYYMMDDHHMMSS').toString()}`;
 
-        _exportXls.default.exportarExcel(sheetNames, [base[0]], `./files/contactos.xlsx`);
+        _fs.default.mkdirSync(`./files/bases/emp${directorio}/`);
 
-        resolve(baseOk);
+        _exportXls.default.exportarExcel(sheetNames, [base[0]], `./files/bases/emp${directorio}/contactos.xlsx`);
+
+        resolve(directorio);
       } catch (error) {
         console.log(error);
       }

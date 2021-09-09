@@ -20,11 +20,11 @@ class procesosController {
 
   async generaBaseDiscador(req, res, next) {
     try {
-      await _baseDiscador.default.generaBase(req.query);
+      let response = await _baseDiscador.default.generaBase(req.query);
 
-      var file = _fs.default.createReadStream(`./files/contactos.xlsx`);
+      var file = _fs.default.createReadStream(`./files/bases/emp${response}/contactos.xlsx`);
 
-      var stat = _fs.default.statSync(`./files/contactos.xlsx`);
+      var stat = _fs.default.statSync(`./files/bases/emp${response}/contactos.xlsx`);
 
       res.setHeader('Content-Length', stat.size);
       res.setHeader('Content-Type', 'application/vnd.openxmlformats');
@@ -52,11 +52,11 @@ class procesosController {
 
   async generaArchivoUsoMultiple(req, res, next) {
     try {
-      await _archivoUsoMultiple.default.generaArchivo(req.query);
+      let response = await _archivoUsoMultiple.default.generaArchivo(req.query);
 
-      var file = _fs.default.createReadStream(`./files/${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`);
+      var file = _fs.default.createReadStream(`./files/ArchivoUsoMultiples/emp${response}/${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`);
 
-      var stat = _fs.default.statSync(`./files/${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`);
+      var stat = _fs.default.statSync(`./files/ArchivoUsoMultiples/emp${response}/${req.query.id_empresa}_${req.query.remesa_desde}_${req.query.remesa_hasta}.xlsx`);
 
       res.setHeader('Content-Length', stat.size);
       res.setHeader('Content-Type', 'application/vnd.openxmlformats');

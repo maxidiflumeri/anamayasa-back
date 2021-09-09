@@ -69,6 +69,10 @@ module.exports = function (sequelize, DataTypes) {
     cuerpo: {
       type: DataTypes.STRING(100),
       allowNull: false
+    },
+    activa: {
+      type: DataTypes.DECIMAL(1),
+      allowNull: false
     }
   }, {
     sequelize,

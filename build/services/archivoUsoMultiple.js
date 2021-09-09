@@ -9,6 +9,10 @@ var _connection = _interopRequireDefault(require("../config/db/connection"));
 
 var _exportXls = _interopRequireDefault(require("./exportXls.service"));
 
+var _moment = _interopRequireDefault(require("moment"));
+
+var _fs = _interopRequireDefault(require("fs"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _default = {
@@ -34,6 +38,18 @@ var _default = {
     let remesa_omite_hasta = queryParams.remesa_omite_hasta;
     let politica_omite_desde = queryParams.politica_omite_desde;
     let politica_omite_hasta = queryParams.politica_omite_hasta;
+    let id_deudor_desde = queryParams.id_deudor_desde;
+    let id_deudor_hasta = queryParams.id_deudor_hasta;
+    let id_deudor_omite_desde = queryParams.id_deudor_omite_desde;
+    let id_deudor_omite_hasta = queryParams.id_deudor_omite_hasta;
+    let fecha_cierre_desde = queryParams.fecha_cierre_desde == '' ? '2000-01-01' : queryParams.fecha_cierre_desde;
+    let fecha_cierre_hasta = queryParams.fecha_cierre_hasta == '' ? (0, _moment.default)().format('YYYY-MM-DD') : queryParams.fecha_cierre_hasta;
+    let fecha_cierre_omite_desde = queryParams.fecha_cierre_omite_desde;
+    let fecha_cierre_omite_hasta = queryParams.fecha_cierre_omite_hasta;
+    let fecha_recepcion_desde = queryParams.fecha_recepcion_desde == '' ? '2000-01-01' : queryParams.fecha_recepcion_desde;
+    let fecha_recepcion_hasta = queryParams.fecha_recepcion_hasta == '' ? (0, _moment.default)().format('YYYY-MM-DD') : queryParams.fecha_recepcion_hasta;
+    let fecha_recepcion_omite_desde = queryParams.fecha_recepcion_omite_desde;
+    let fecha_recepcion_omite_hasta = queryParams.fecha_recepcion_omite_hasta;
     let telEfectivos = queryParams.telEfectivos;
     let celIplan = queryParams.celIplan;
     let celIplanLc = queryParams.celIplanLc;
@@ -238,12 +254,29 @@ var _default = {
     let aux50_hasta = queryParams.aux50_hasta;
     let aux50_omite_desde = queryParams.aux50_omite_desde;
     let aux50_omite_hasta = queryParams.aux50_omite_hasta;
-    let queryWhere = `WHERE d.id_empresa = ${id_empresa} AND
-                        d.id_situacion between ${id_situacion_desde} AND ${id_situacion_hasta} AND d.id_situacion not between ${id_situacion_omite_desde} AND ${id_situacion_omite_hasta} AND
-                        d.id_gestion between ${id_gestion_desde} AND ${id_gestion_hasta} AND d.id_gestion not between ${id_gestion_omite_desde} AND ${id_gestion_omite_hasta} AND
-                        d.remesa between ${remesa_desde} AND ${remesa_hasta} AND d.remesa not between ${remesa_omite_desde} AND ${remesa_omite_hasta} AND
-                        d.deuda_historica between ${deuda_desde} AND ${deuda_hasta} AND d.deuda_historica not between ${deuda_omite_desde} AND ${deuda_omite_hasta} AND
-                        d.id_politica between ${politica_desde} AND ${politica_hasta} AND d.id_politica not between ${politica_omite_desde} AND ${politica_omite_hasta}`; // AND d.fecha_cierra > '${moment().format('YYYY-MM-DD')}'
+    let queryWhere = '';
+
+    if (id_empresa == 0) {
+      queryWhere = `WHERE d.id_empresa between ${id_empresa} AND 99999 AND
+            d.id_situacion between ${id_situacion_desde} AND ${id_situacion_hasta} AND d.id_situacion not between ${id_situacion_omite_desde} AND ${id_situacion_omite_hasta} AND
+            d.id_gestion between ${id_gestion_desde} AND ${id_gestion_hasta} AND d.id_gestion not between ${id_gestion_omite_desde} AND ${id_gestion_omite_hasta} AND
+            d.remesa between ${remesa_desde} AND ${remesa_hasta} AND d.remesa not between ${remesa_omite_desde} AND ${remesa_omite_hasta} AND
+            d.deuda_historica between ${deuda_desde} AND ${deuda_hasta} AND d.deuda_historica not between ${deuda_omite_desde} AND ${deuda_omite_hasta} AND
+            d.id_politica between ${politica_desde} AND ${politica_hasta} AND d.id_politica not between ${politica_omite_desde} AND ${politica_omite_hasta} AND
+            d.id_deudor between ${id_deudor_desde} AND ${id_deudor_hasta} AND d.id_deudor not between ${id_deudor_omite_desde} AND ${id_deudor_omite_hasta} AND
+            d.fecha_cierra between '${fecha_cierre_desde}' and '${fecha_cierre_hasta}' and d.fecha_cierra not between '${fecha_cierre_omite_desde}' and '${fecha_cierre_omite_hasta}' AND
+            d.fecha_recepcion between '${fecha_recepcion_desde}' and '${fecha_recepcion_hasta}' and d.fecha_recepcion not between '${fecha_recepcion_omite_desde}' and '${fecha_recepcion_omite_hasta}' `;
+    } else {
+      queryWhere = `WHERE d.id_empresa = ${id_empresa} AND
+            d.id_situacion between ${id_situacion_desde} AND ${id_situacion_hasta} AND d.id_situacion not between ${id_situacion_omite_desde} AND ${id_situacion_omite_hasta} AND
+            d.id_gestion between ${id_gestion_desde} AND ${id_gestion_hasta} AND d.id_gestion not between ${id_gestion_omite_desde} AND ${id_gestion_omite_hasta} AND
+            d.remesa between ${remesa_desde} AND ${remesa_hasta} AND d.remesa not between ${remesa_omite_desde} AND ${remesa_omite_hasta} AND
+            d.deuda_historica between ${deuda_desde} AND ${deuda_hasta} AND d.deuda_historica not between ${deuda_omite_desde} AND ${deuda_omite_hasta} AND
+            d.id_politica between ${politica_desde} AND ${politica_hasta} AND d.id_politica not between ${politica_omite_desde} AND ${politica_omite_hasta} AND
+            d.id_deudor between ${id_deudor_desde} AND ${id_deudor_hasta} AND d.id_deudor not between ${id_deudor_omite_desde} AND ${id_deudor_omite_hasta} AND
+            d.fecha_cierra between '${fecha_cierre_desde}' and '${fecha_cierre_hasta}' and d.fecha_cierra not between '${fecha_cierre_omite_desde}' and '${fecha_cierre_omite_hasta}' AND
+            d.fecha_recepcion between '${fecha_recepcion_desde}' and '${fecha_recepcion_hasta}' and d.fecha_recepcion not between '${fecha_recepcion_omite_desde}' and '${fecha_recepcion_omite_hasta}' `;
+    }
 
     if (telEfectivos == "true") {
       queryWhere = queryWhere + ` AND t.efectivo = 1 `;
@@ -651,15 +684,18 @@ var _default = {
 
     let queryDeudores = ` SELECT d.id_deudor, d.nombre_apellido, d.id_empresa , e.descripcion as nombreEmpresa, d.nro_cliente1, d.nro_cliente2, d.nro_cliente3,
                             d.deuda_historica, d.fecha_alta, d.fecha_mora, d.fecha_baja, d.fecha_recepcion,  d.fecha_cierra,
-                            d.remesa, cg.descripcion as codigoGestion, cs.descripcion as CodigoSituacion, mnp.descripcion as CodigoDeMotivoNoPago
+                            d.remesa, d.id_gestion, cg.descripcion as codigoGestion, d.id_situacion, cs.descripcion as CodigoSituacion, d.id_motivo_no_pago, mnp.descripcion as CodigoDeMotivoNoPago
                             FROM deudores as d
                             LEFT OUTER JOIN correos as c on d.id_deudor = c.id_deudor
                             LEFT OUTER JOIN p_codigos_gestion as cg on d.id_gestion = cg.id_gestion
                             LEFT OUTER JOIN p_codigos_situacion as cs on d.id_situacion = cs.id_situacion
                             LEFT OUTER JOIN p_motivos_no_pago as mnp on d.id_motivo_no_pago = mnp.id_motivo
                             LEFT OUTER JOIN empresas as e on d.id_empresa = e.id_empresa
-                            ${queryWhere}`;
-    let queryTelefonos = `SELECT d.id_deudor,t.telefono, pt.descripcion
+                            ${queryWhere}
+                            group by d.id_deudor, d.nombre_apellido, d.id_empresa,  e.descripcion,  d.nro_cliente1, d.nro_cliente2, d.nro_cliente3,
+                            d.deuda_historica, d.fecha_alta, d.fecha_mora, d.fecha_baja, d.fecha_recepcion,  d.fecha_cierra,
+                            d.remesa, d.id_gestion, cg.descripcion, d.id_situacion, cs.descripcion, d.id_motivo_no_pago, mnp.descripcion`;
+    let queryTelefonos = `SELECT d.id_deudor,t.telefono, t.id_tipo_telefono, pt.descripcion, t.efectivo
                             FROM deudores as d
                             INNER JOIN telefonos as t on d.id_deudor = t.id_deudor
                             INNER JOIN p_tipos_telefono as pt on t.id_tipo_telefono = pt.id_tipo_telefono
@@ -730,10 +766,13 @@ var _default = {
         response.push(pagos[0]);
         response.push(comentarios[0]);
         response.push(convenios[0]);
+        let directorio = `${queryParams.id_empresa}_rem${queryParams.remesa_desde}_${(0, _moment.default)().format('YYYYMMDDHHMMSS').toString()}`;
 
-        _exportXls.default.exportarExcel(sheetNames, response, `./files/${id_empresa}_${remesa_desde}_${remesa_hasta}.xlsx`);
+        _fs.default.mkdirSync(`./files/ArchivoUsoMultiples/emp${directorio}/`);
 
-        resolve(response);
+        _exportXls.default.exportarExcel(sheetNames, response, `./files/ArchivoUsoMultiples/emp${directorio}/${id_empresa}_${remesa_desde}_${remesa_hasta}.xlsx`);
+
+        resolve(directorio);
       } catch (error) {
         console.log(error);
       }
