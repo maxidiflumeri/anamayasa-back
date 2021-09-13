@@ -717,11 +717,16 @@ export default {
                 let base = await connection.query(query)                
                 modificaCelulares(base[0], celIplan, celIplanLc, net2phone)
                 let directorio = `${queryParams.id_empresa}_rem${queryParams.remesa_desde}_${moment().format('YYYYMMDDHHMMSS').toString()}`
-                fs.mkdirSync(`./files/bases/emp${directorio}/`)
+                if (fs.existsSync('./files/bases/')) {
+                    fs.mkdirSync(`./files/bases/emp${directorio}/`)
+                } else {
+                    fs.mkdirSync('./files/bases',{recursive: true})
+                    fs.mkdirSync(`./files/bases/emp${directorio}/`)
+                }                
                 xlsService.exportarExcel(sheetNames, [base[0]], `./files/bases/emp${directorio}/contactos.xlsx`)    
                 resolve(directorio)
-            } catch (error) {
-                console.log(error)
+            } catch (error) {                
+                reject(error.message)
             }
         })
     }

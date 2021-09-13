@@ -720,7 +720,7 @@ var _default = {
         let base = await _connection.default.query(query);
         resolve(base);
       } catch (error) {
-        console.log(error);
+        reject(error.message);
       }
     });
   }

@@ -125,7 +125,7 @@ class deudorController {
 
     async obtenerPrimerDeudor(req, res, next) {
         try {
-            const response = await this._model.findAll({ limit: 1, order: [['id_deudor', 'ASC']] })
+            const response = await this._model.findAll({ limit: 1, order: [['id_deudor', 'DESC']] })
             res.status(200).json(response)
         } catch (error) {
             res.status(500).json({

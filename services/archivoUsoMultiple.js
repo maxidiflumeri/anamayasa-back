@@ -31,12 +31,12 @@ export default {
         let id_deudor_hasta = queryParams.id_deudor_hasta
         let id_deudor_omite_desde = queryParams.id_deudor_omite_desde
         let id_deudor_omite_hasta = queryParams.id_deudor_omite_hasta
-        let fecha_cierre_desde = queryParams.fecha_cierre_desde==''?'2000-01-01':queryParams.fecha_cierre_desde
-        let fecha_cierre_hasta = queryParams.fecha_cierre_hasta==''?moment().format('YYYY-MM-DD'):queryParams.fecha_cierre_hasta
+        let fecha_cierre_desde = queryParams.fecha_cierre_desde == '' ? '2000-01-01' : queryParams.fecha_cierre_desde
+        let fecha_cierre_hasta = queryParams.fecha_cierre_hasta == '' ? moment().format('YYYY-MM-DD') : queryParams.fecha_cierre_hasta
         let fecha_cierre_omite_desde = queryParams.fecha_cierre_omite_desde
         let fecha_cierre_omite_hasta = queryParams.fecha_cierre_omite_hasta
-        let fecha_recepcion_desde = queryParams.fecha_recepcion_desde==''?'2000-01-01':queryParams.fecha_recepcion_desde
-        let fecha_recepcion_hasta = queryParams.fecha_recepcion_hasta==''?moment().format('YYYY-MM-DD'):queryParams.fecha_recepcion_hasta
+        let fecha_recepcion_desde = queryParams.fecha_recepcion_desde == '' ? '2000-01-01' : queryParams.fecha_recepcion_desde
+        let fecha_recepcion_hasta = queryParams.fecha_recepcion_hasta == '' ? moment().format('YYYY-MM-DD') : queryParams.fecha_recepcion_hasta
         let fecha_recepcion_omite_desde = queryParams.fecha_recepcion_omite_desde
         let fecha_recepcion_omite_hasta = queryParams.fecha_recepcion_omite_hasta
         let telEfectivos = queryParams.telEfectivos
@@ -269,7 +269,7 @@ export default {
             d.id_deudor between ${id_deudor_desde} AND ${id_deudor_hasta} AND d.id_deudor not between ${id_deudor_omite_desde} AND ${id_deudor_omite_hasta} AND
             d.fecha_cierra between '${fecha_cierre_desde}' and '${fecha_cierre_hasta}' and d.fecha_cierra not between '${fecha_cierre_omite_desde}' and '${fecha_cierre_omite_hasta}' AND
             d.fecha_recepcion between '${fecha_recepcion_desde}' and '${fecha_recepcion_hasta}' and d.fecha_recepcion not between '${fecha_recepcion_omite_desde}' and '${fecha_recepcion_omite_hasta}' `
-        }        
+        }
 
         if (telEfectivos == "true") {
             queryWhere = queryWhere + ` AND t.efectivo = 1 `
@@ -773,11 +773,16 @@ export default {
                 response.push(comentarios[0])
                 response.push(convenios[0])
                 let directorio = `${queryParams.id_empresa}_rem${queryParams.remesa_desde}_${moment().format('YYYYMMDDHHMMSS').toString()}`
-                fs.mkdirSync(`./files/ArchivoUsoMultiples/emp${directorio}/`)
+                if (fs.existsSync('./files/ArchivoUsoMultiples/')) {
+                    fs.mkdirSync(`./files/ArchivoUsoMultiples/emp${directorio}/`)
+                } else {
+                    fs.mkdirSync('./files/ArchivoUsoMultiples',{recursive: true})
+                    fs.mkdirSync(`./files/ArchivoUsoMultiples/emp${directorio}/`)
+                }
                 xlsService.exportarExcel(sheetNames, response, `./files/ArchivoUsoMultiples/emp${directorio}/${id_empresa}_${remesa_desde}_${remesa_hasta}.xlsx`)
                 resolve(directorio)
             } catch (error) {
-                console.log(error)
+                reject(error.mensaje)
             }
         })
     }

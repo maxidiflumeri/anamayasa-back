@@ -768,13 +768,21 @@ var _default = {
         response.push(convenios[0]);
         let directorio = `${queryParams.id_empresa}_rem${queryParams.remesa_desde}_${(0, _moment.default)().format('YYYYMMDDHHMMSS').toString()}`;
 
-        _fs.default.mkdirSync(`./files/ArchivoUsoMultiples/emp${directorio}/`);
+        if (_fs.default.existsSync('./files/ArchivoUsoMultiples/')) {
+          _fs.default.mkdirSync(`./files/ArchivoUsoMultiples/emp${directorio}/`);
+        } else {
+          _fs.default.mkdirSync('./files/ArchivoUsoMultiples', {
+            recursive: true
+          });
+
+          _fs.default.mkdirSync(`./files/ArchivoUsoMultiples/emp${directorio}/`);
+        }
 
         _exportXls.default.exportarExcel(sheetNames, response, `./files/ArchivoUsoMultiples/emp${directorio}/${id_empresa}_${remesa_desde}_${remesa_hasta}.xlsx`);
 
         resolve(directorio);
       } catch (error) {
-        console.log(error);
+        reject(error.mensaje);
       }
     });
   }

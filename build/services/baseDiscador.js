@@ -717,13 +717,21 @@ var _default = {
         modificaCelulares(base[0], celIplan, celIplanLc, net2phone);
         let directorio = `${queryParams.id_empresa}_rem${queryParams.remesa_desde}_${(0, _moment.default)().format('YYYYMMDDHHMMSS').toString()}`;
 
-        _fs.default.mkdirSync(`./files/bases/emp${directorio}/`);
+        if (_fs.default.existsSync('./files/bases/')) {
+          _fs.default.mkdirSync(`./files/bases/emp${directorio}/`);
+        } else {
+          _fs.default.mkdirSync('./files/bases', {
+            recursive: true
+          });
+
+          _fs.default.mkdirSync(`./files/bases/emp${directorio}/`);
+        }
 
         _exportXls.default.exportarExcel(sheetNames, [base[0]], `./files/bases/emp${directorio}/contactos.xlsx`);
 
         resolve(directorio);
       } catch (error) {
-        console.log(error);
+        reject(error.message);
       }
     });
   }

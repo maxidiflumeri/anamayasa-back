@@ -723,8 +723,8 @@ export default {
             try {                
                 let base = await connection.query(query)                                
                 resolve(base)
-            } catch (error) {
-                console.log(error)
+            } catch (error) {                
+                reject(error.message)
             }
         })
     }
