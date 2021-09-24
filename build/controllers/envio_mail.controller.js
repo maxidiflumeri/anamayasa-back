@@ -30,10 +30,23 @@ class envioMailController {
       let remitente = politica[0].correo;
       let password = politica[0].password;
       let resultado = await _envioMail.default.enviarMail(remitente, password, req.body.destinatario, req.body.asunto, req.body.texto, req.files ? req.files : null);
+      let nombreAdjuntos = '';
+
+      if (req.files) {
+        for (let index = 0; index < req.files.length; index++) {
+          const element = req.files[index];
+
+          if (nombreAdjuntos.length == 0) {
+            nombreAdjuntos = element.originalname;
+          } else {
+            nombreAdjuntos = nombreAdjuntos + ', ' + element.originalname;
+          }
+        }
+      }
 
       if (resultado.codigo == 200) {
         const textoStr = (0, _textversionjs.default)(req.body.texto);
-        const detalle = `Se envía Mail: Para ${req.body.destinatario}\nAsunto: ${req.body.asunto}\nAdjunto: ${req.file ? req.file.originalname : null}\nTexo: ${textoStr}`;
+        const detalle = `Se envía Mail: Para ${req.body.destinatario} /// Asunto: ${req.body.asunto} /// Adjunto/s: ${nombreAdjuntos.length > 0 ? nombreAdjuntos : 'Sin Adjunto'} /// Texo: ${textoStr}`;
 
         _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 40, detalle, null, null);
 
