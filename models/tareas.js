@@ -67,6 +67,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(100),
             allowNull: false
         },
+        accion: {
+            type: DataTypes.STRING(500),
+            allowNull: true
+        },
         activa: {
             type: DataTypes.DECIMAL(1),
             allowNull: false
