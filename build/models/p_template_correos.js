@@ -25,6 +25,10 @@ module.exports = function (sequelize, DataTypes) {
     texto: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    asunto: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     sequelize,
