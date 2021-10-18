@@ -1,14 +1,14 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('p_template_correos', {
     id_template: {
-      type: DataTypes.DECIMAL(18,0),
+      type: DataTypes.DECIMAL(18, 0),
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
     id_empresa: {
-      type: DataTypes.DECIMAL(18,0),
+      type: DataTypes.DECIMAL(18, 0),
       allowNull: false,
       references: {
         model: 'empresas',
@@ -18,11 +18,15 @@ module.exports = function(sequelize, DataTypes) {
     nombre: {
       type: DataTypes.STRING(50),
       allowNull: false
-    },    
+    },
     texto: {
       type: DataTypes.STRING,
       allowNull: true
-    }    
+    },
+    asunto: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   }, {
     sequelize,
     tableName: 'p_template_correos',

@@ -42,6 +42,7 @@ class p_template_correosController {
 
       async agregar(req, res, next){          
         try{                
+            console.log(req.body)
             const response = await this._model.create(req.body)
             res.status(200).json(response)
         }catch(error){              
