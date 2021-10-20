@@ -26,9 +26,37 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
-    txt_politica: {
+    txt_politica1: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
+    },
+    txt_politica2: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    txt_politica3: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    txt_politica4: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    txt_politica5: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    txt_politica6: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    txt_politica7: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    txt_politica8: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     txt_speech: {
       type: DataTypes.STRING,
