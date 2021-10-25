@@ -152,13 +152,13 @@ class deudorController {
             const deudor = await this._model.findAll({ where: { id_deudor: req.params.id } })
             const response = await this._model.update(req.body, { where: { id_deudor: req.params.id } })
             if (deudor[0].id_situacion != req.body.id_situacion) {
-                serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 3, `Se modifica codigo ${deudor[0].id_situacion} por el codigo ${req.body.id_situacion}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 3, `Se modifica codigo ${deudor[0].id_situacion} por el codigo ${req.body.id_situacion}`, req.body.id_llamada, req.body.grabacion)
             }
             if (deudor[0].id_gestion != req.body.id_gestion) {
-                serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 13, `Se modifica codigo ${deudor[0].id_gestion} por el codigo ${req.body.id_gestion}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 13, `Se modifica codigo ${deudor[0].id_gestion} por el codigo ${req.body.id_gestion}`, req.body.id_llamada, req.body.grabacion)
             }
             if (deudor[0].id_motivo_no_pago != req.body.id_motivo_no_pago) {
-                serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 21, `Se modifica codigo ${deudor[0].id_motivo_no_pago} por el codigo ${req.body.id_motivo_no_pago}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 21, `Se modifica codigo ${deudor[0].id_motivo_no_pago} por el codigo ${req.body.id_motivo_no_pago}`, req.body.id_llamada, req.body.grabacion)
             }
             res.status(200).json(response)
 

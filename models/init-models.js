@@ -44,6 +44,8 @@ var _vinculos = require("./vinculos");
 var _movil = require("./movil");
 var _p_template_correos = require("./p_template_correos");
 var _tareas = require("./tareas");
+var _toyota_atclientes = require("./toyota_atclientes");
+var _agendas_tc = require("./agendas_tc");
 
 function initModels(sequelize) {
   var codigos_barra = _codigos_barra(sequelize, DataTypes);
@@ -91,6 +93,8 @@ function initModels(sequelize) {
   var movil = _movil(sequelize, DataTypes);
   var p_template_correos = _p_template_correos(sequelize, DataTypes);
   var tareas = _tareas(sequelize, DataTypes);
+  var toyota_atclientes = _toyota_atclientes(sequelize, DataTypes);
+  var agendas_tc = _agendas_tc(sequelize, DataTypes);
 
   deudores.belongsToMany(p_redes_sociales, { through: redes_sociales, foreignKey: "id_deudor", otherKey: "id_red_social" });
   empresas.belongsToMany(p_codigos_tabla, { through: p_empresas_param, foreignKey: "id_empresa", otherKey: "id_tabla" });
@@ -98,14 +102,25 @@ function initModels(sequelize) {
   p_redes_sociales.belongsToMany(deudores, { through: redes_sociales, foreignKey: "id_red_social", otherKey: "id_deudor" });
   codigos_barra.belongsTo(deudores, { as: "id_deudor_deudore", foreignKey: "id_deudor"});
   deudores.hasMany(codigos_barra, { as: "codigos_barras", foreignKey: "id_deudor"});
+
   comentarios.belongsTo(deudores, { as: "id_deudor_deudore", foreignKey: "id_deudor"});
   deudores.hasMany(comentarios, { as: "comentarios", foreignKey: "id_deudor"});
+
+  agendas_tc.belongsTo(deudores, { as: "id_deudor_deudore", foreignKey: "id_deudor"});
+  deudores.hasMany(agendas_tc, { as: "agendas_tc", foreignKey: "id_deudor"});
+
+  toyota_atclientes.belongsTo(deudores, { as: "id_deudor_deudore", foreignKey: "id_deudor"});
+  deudores.hasMany(toyota_atclientes, { as: "toyota_atclientes", foreignKey: "id_deudor"});
+
   convenios.belongsTo(deudores, { as: "id_deudor_deudore", foreignKey: "id_deudor"});
   deudores.hasMany(convenios, { as: "convenios", foreignKey: "id_deudor"});
+
   correos.belongsTo(deudores, { as: "id_deudor_deudore", foreignKey: "id_deudor"});
   deudores.hasMany(correos, { as: "correos", foreignKey: "id_deudor"});
+
   direcciones.belongsTo(deudores, { as: "id_deudor_deudore", foreignKey: "id_deudor"});
   deudores.hasMany(direcciones, { as: "direcciones", foreignKey: "id_deudor"});
+  
   facturas.belongsTo(deudores, { as: "id_deudor_deudore", foreignKey: "id_deudor"});
   facturas.belongsTo(convenios, { as: "id_convenio_convenio", foreignKey: "id_convenio"});
   deudores.hasMany(facturas, { as: "facturas", foreignKey: "id_deudor"});
@@ -235,7 +250,9 @@ function initModels(sequelize) {
     usuarios,
     vinculos,
     movil,
-    tareas
+    tareas,
+    toyota_atclientes,
+    agendas_tc
   };
 }
 module.exports = initModels;

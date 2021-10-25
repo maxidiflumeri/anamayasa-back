@@ -63,7 +63,7 @@ class comentarioController {
     try {
       const response = await this._model.create(req.body);
 
-      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 1, `Comentario: ${req.body.comentario}`, null, null);
+      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 1, `Comentario: ${req.body.comentario}`, req.body.id_llamada, req.body.grabacion);
 
       res.status(200).json(response);
     } catch (error) {

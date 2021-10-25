@@ -92,6 +92,10 @@ var _p_template_correos = require("./p_template_correos");
 
 var _tareas = require("./tareas");
 
+var _toyota_atclientes = require("./toyota_atclientes");
+
+var _agendas_tc = require("./agendas_tc");
+
 function initModels(sequelize) {
   var codigos_barra = _codigos_barra(sequelize, DataTypes);
 
@@ -183,6 +187,10 @@ function initModels(sequelize) {
 
   var tareas = _tareas(sequelize, DataTypes);
 
+  var toyota_atclientes = _toyota_atclientes(sequelize, DataTypes);
+
+  var agendas_tc = _agendas_tc(sequelize, DataTypes);
+
   deudores.belongsToMany(p_redes_sociales, {
     through: redes_sociales,
     foreignKey: "id_deudor",
@@ -217,6 +225,22 @@ function initModels(sequelize) {
   });
   deudores.hasMany(comentarios, {
     as: "comentarios",
+    foreignKey: "id_deudor"
+  });
+  agendas_tc.belongsTo(deudores, {
+    as: "id_deudor_deudore",
+    foreignKey: "id_deudor"
+  });
+  deudores.hasMany(agendas_tc, {
+    as: "agendas_tc",
+    foreignKey: "id_deudor"
+  });
+  toyota_atclientes.belongsTo(deudores, {
+    as: "id_deudor_deudore",
+    foreignKey: "id_deudor"
+  });
+  deudores.hasMany(toyota_atclientes, {
+    as: "toyota_atclientes",
     foreignKey: "id_deudor"
   });
   convenios.belongsTo(deudores, {
@@ -623,7 +647,9 @@ function initModels(sequelize) {
     usuarios,
     vinculos,
     movil,
-    tareas
+    tareas,
+    toyota_atclientes,
+    agendas_tc
   };
 }
 

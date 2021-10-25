@@ -44,6 +44,8 @@ import items_procesosRoutes from './items_procesos.routes'
 import envio_mailRoutes from './envio_mail.routes'
 import p_template_correos from './p_template_correos.routes'
 import procesos from './procesos.routes'
+import toyota_atclientes from './toyota_atclientes.routes'
+import agendas_tc from './agendas_tc.routes'
 
 const router = routerx()
 
@@ -92,5 +94,7 @@ router.use('/itemsProcesos', items_procesosRoutes)
 router.use('/servicio', envio_mailRoutes)
 router.use('/templateCorreos', p_template_correos)
 router.use('/procesos', procesos)
+router.use('/toyotaAtClientes', toyota_atclientes)
+router.use('/agendasTc', agendas_tc)
 
 export default router

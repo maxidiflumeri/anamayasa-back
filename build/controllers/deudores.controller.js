@@ -220,15 +220,15 @@ class deudorController {
       });
 
       if (deudor[0].id_situacion != req.body.id_situacion) {
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 3, `Se modifica codigo ${deudor[0].id_situacion} por el codigo ${req.body.id_situacion}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 3, `Se modifica codigo ${deudor[0].id_situacion} por el codigo ${req.body.id_situacion}`, req.body.id_llamada, req.body.grabacion);
       }
 
       if (deudor[0].id_gestion != req.body.id_gestion) {
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 13, `Se modifica codigo ${deudor[0].id_gestion} por el codigo ${req.body.id_gestion}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 13, `Se modifica codigo ${deudor[0].id_gestion} por el codigo ${req.body.id_gestion}`, req.body.id_llamada, req.body.grabacion);
       }
 
       if (deudor[0].id_motivo_no_pago != req.body.id_motivo_no_pago) {
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 21, `Se modifica codigo ${deudor[0].id_motivo_no_pago} por el codigo ${req.body.id_motivo_no_pago}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 21, `Se modifica codigo ${deudor[0].id_motivo_no_pago} por el codigo ${req.body.id_motivo_no_pago}`, req.body.id_llamada, req.body.grabacion);
       }
 
       res.status(200).json(response);

@@ -97,6 +97,10 @@ var _p_template_correos = _interopRequireDefault(require("./p_template_correos.r
 
 var _procesos = _interopRequireDefault(require("./procesos.routes"));
 
+var _toyota_atclientes = _interopRequireDefault(require("./toyota_atclientes.routes"));
+
+var _agendas_tc = _interopRequireDefault(require("./agendas_tc.routes"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const router = (0, _expressPromiseRouter.default)();
@@ -145,5 +149,7 @@ router.use('/itemsProcesos', _items_procesos.default);
 router.use('/servicio', _envio_mail.default);
 router.use('/templateCorreos', _p_template_correos.default);
 router.use('/procesos', _procesos.default);
+router.use('/toyotaAtClientes', _toyota_atclientes.default);
+router.use('/agendasTc', _agendas_tc.default);
 var _default = router;
 exports.default = _default;
