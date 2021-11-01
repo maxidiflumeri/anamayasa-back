@@ -43,13 +43,14 @@ class direccionController {
     }
 
     async agregar(req, res, next) {
+        console.log(req.body)
         try {
             if (req.body.efectivo == 1) {
                 await this._model.update({ efectivo: 0 }, { where: { id_deudor: req.body.id_deudor, efectivo: 1 } })
             }
             const response = await this._model.create(req.body)
             let detalle = this.generaDetalle('Se agrega domicilio: ', req.body)
-            serviceTransaccion.generaTransaccion(req.headers.token, req.body.id_deudor, 37, detalle, null, null)
+            serviceTransaccion.generaTransaccion(req.headers.token, req.body.id_deudor, 37, detalle, req.body.id_llamada, req.body.grabacion)
             res.status(200).json(response)
         } catch (error) {
             res.status(500).json({
@@ -61,6 +62,7 @@ class direccionController {
 
     async actualizar(req, res, next) {
         try {
+            console.log(req.body)
             const domicilio = await this._model.findAll({ where: { id_direccion: req.params.id } })
             if (req.body.efectivo == 1) {
                 await this._model.update({ efectivo: 0 }, { where: { id_deudor: domicilio[0].id_deudor, efectivo: 1 } })
@@ -68,7 +70,7 @@ class direccionController {
             const response = await this._model.update(req.body, { where: { id_direccion: req.params.id } })
             let detalle = this.generaDetalle('Se modifica domicilio: ', domicilio[0])
             detalle = detalle + this.generaDetalle(' por ', req.body)
-            serviceTransaccion.generaTransaccion(req.headers.token, domicilio[0].id_deudor, 39, detalle, null, null)
+            serviceTransaccion.generaTransaccion(req.headers.token, domicilio[0].id_deudor, 39, detalle, req.body.id_llamada, req.body.grabacion)
             res.status(200).json(response)
 
         } catch (error) {
@@ -86,7 +88,7 @@ class direccionController {
             if (seBorro) {
                 let detalle = this.generaDetalle('Se elimina domicilio: ', domicilio[0])
                 res.send({ Mensaje: "Se borro exitosamente" })
-                serviceTransaccion.generaTransaccion(req.headers.token, domicilio[0].id_deudor, 38, detalle, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, domicilio[0].id_deudor, 38, detalle, req.body.id_llamada, req.body.grabacion)
             } else {
                 res.send({ Mensaje: "Id no encontrado" })
             }

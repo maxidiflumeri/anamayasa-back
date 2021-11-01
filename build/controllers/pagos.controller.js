@@ -91,7 +91,7 @@ class pagosController {
         });
         const detalle = `Se carga nuevo pago, tipo pago ${req.body.id_tipo_pago}, fecha de pago ${req.body.fecha_pago}, importe ${req.body.importe_total}`;
 
-        _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 5, detalle, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 5, detalle, req.body.id_llamada, req.body.grabacion);
 
         if (req.body.id_tipo_pago == 8) {
           await _index.default.deudores.update({
@@ -159,7 +159,7 @@ class pagosController {
 
       const detalle = `Se anula pago id ${req.params.id_pago}`;
 
-      _transaccion.default.generaTransaccion(req.headers.token, req.params.id_deudor, 18, detalle, null, null);
+      _transaccion.default.generaTransaccion(req.headers.token, req.params.id_deudor, 18, detalle, req.body.id_llamada, req.body.grabacion);
 
       await t.commit();
       res.status(200).json(response);

@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  app-dev:
+    #este env_file sirve para determinar el archivo de variables de entorno que va a usar el contenedor cuando ejecute la app
+    #(no sirve para referenciar en el docker-compose)
+    env_file:
+      - ./config/shared/development.env
+    build:
+      context: .
+      dockerfile: Dockerfile.Dev
+    environment:
+      PORT: "${PORT}"
+      NODE_ENV: "${NODE_ENV}"
+      DB_USERNAME: "${DB_USERNAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_DATABASE: "${DB_DATABASE}"
+      DB_HOST: "${DB_HOST}"
+      DB_DIALECT: "${DB_DIALECT}"
+      DB_LOGGING: "${DB_LOGGING}"
+      DB_REQTIMEOUT: "${DB_REQTIMEOUT}"
+    ports:
+      - "${PORT}:${PORT}"
+
+  app-prod:
+    #este env_file sirve para determinar el archivo de variables de entorno que va a usar el contenedor cuando ejecute la app
+    #(no sirve para referenciar en el docker-compose)
+    env_file:
+      - ./config/shared/production.env
+    build:
+      context: .
+      dockerfile: Dockerfile.Prod
+    environment:
+      PORT: "${PORT}"
+      NODE_ENV: "${NODE_ENV}"
+      DB_USERNAME: "${DB_USERNAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_DATABASE: "${DB_DATABASE}"
+      DB_HOST: "${DB_HOST}"
+      DB_DIALECT: "${DB_DIALECT}"
+      DB_LOGGING: "${DB_LOGGING}"
+      DB_REQTIMEOUT: "${DB_REQTIMEOUT}"
+    ports:
+      - "${PORT}:${PORT}"
+# para buildear y correr la app usar el comando "docker compose up"
+
+# docker compose --env-file ./config/shared/development.env up app-dev /// este comando se usa para definir el archivo de donde toma las variables el docker-compose

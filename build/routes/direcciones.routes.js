@@ -36,10 +36,10 @@ router.get('/consultar', _auth.default.verificarGestor, async (req, res, next) =
 router.post('/agregar', _auth.default.verificarGestor, async (req, res, next) => {
   _direccionesController.agregar(req, res, next);
 });
-router.put('/modificar/:id', _auth.default.verificarAdministrador, async (req, res, next) => {
+router.put('/modificar/:id', _auth.default.verificarGestor, async (req, res, next) => {
   _direccionesController.actualizar(req, res, next);
 });
-router.delete('/eliminar/:id', _auth.default.verificarAdministrador, async (req, res, next) => {
+router.delete('/eliminar/:id', _auth.default.verificarGestor, async (req, res, next) => {
   _direccionesController.eliminar(req, res, next);
 });
 var _default = router;

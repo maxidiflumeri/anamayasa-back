@@ -86,7 +86,7 @@ class telefonosController {
             } else {
                 req.body.telefono = telefonoOk[0].telefono
                 const response = await this._model.create(req.body)
-                serviceTransaccion.generaTransaccion(req.headers.token, req.body.id_deudor, 15, `Se agrega telefono ${req.body.telefono}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, req.body.id_deudor, 15, `Se agrega telefono ${req.body.telefono}`, req.body.id_llamada, req.body.grabacion)
                 res.status(200).json(response)
             }
         } catch (error) {
@@ -117,18 +117,18 @@ class telefonosController {
                 const response = await this._model.update(req.body, { where: { id_deudor: req.params.id, telefono: req.params.telefono } })
                 //Inicia carga de transaccion
                 if (telefono[0].telefono != req.body.telefono) {
-                    serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 4, `Se modifica telefono ${req.params.telefono} por el telefono ${req.body.telefono}`, null, null)
+                    serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 4, `Se modifica telefono ${req.params.telefono} por el telefono ${req.body.telefono}`, req.body.id_llamada, req.body.grabacion)
                 }
                 if (telefono[0].efectivo != req.body.efectivo) {
                     if (req.body.efectivo == 1) {
-                        serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 4, `Se marca como principal el telefono ${req.body.telefono}`, null, null)
+                        serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 4, `Se marca como principal el telefono ${req.body.telefono}`, req.body.id_llamada, req.body.grabacion)
                     } else {
-                        serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 4, `Se desmarca como principal el telefono ${req.body.telefono}`, null, null)
+                        serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 4, `Se desmarca como principal el telefono ${req.body.telefono}`, req.body.id_llamada, req.body.grabacion)
                     }
                 }
                 if (telefono[0].id_tipo_telefono != req.body.id_tipo_telefono) {
                     const detalle = `Se modifica el tipo telefono ${telefono[0].id_tipo_telefono} por el tipo telefono ${req.body.id_tipo_telefono} del telefono ${req.body.telefono}`
-                    serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 4, detalle, null, null)
+                    serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 4, detalle, req.body.id_llamada, req.body.grabacion)
                 }
                 res.status(200).json(response)
             }
@@ -146,7 +146,7 @@ class telefonosController {
             const seBorro = await this._model.destroy({ where: { id_deudor: req.params.id, telefono: req.params.telefono } })
             if (seBorro) {
                 res.send({ Mensaje: "Se borro exitosamente" })
-                serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 17, `Se elimina telefono ${req.params.telefono}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, req.params.id, 17, `Se elimina telefono ${req.params.telefono}`, req.body.id_llamada, req.body.grabacion)
             } else {
                 res.send({ Mensaje: "Id no encontrado" })
             }

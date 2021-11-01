@@ -61,7 +61,7 @@ class vinculosController {
                 }
             }
             const response = await this._model.create(req.body)
-            serviceTransaccion.generaTransaccion(req.headers.token, req.body.id_deudor, 34, `Se agrega vinculo ${req.body.nombre}`, null, null)
+            serviceTransaccion.generaTransaccion(req.headers.token, req.body.id_deudor, 34, `Se agrega vinculo ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion)
             res.status(200).json(response)
         } catch (error) {
             res.status(500).json({
@@ -90,16 +90,16 @@ class vinculosController {
             const vinculo = await this._model.findAll({ where: { id_vinculo: req.params.id } })
             const response = await this._model.update(req.body, { where: { id_vinculo: req.params.id } })
             if (vinculo[0].nombre != req.body.nombre) {
-                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica nombre del vinculo ${vinculo[0].nombre} por el nombre ${req.body.nombre}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica nombre del vinculo ${vinculo[0].nombre} por el nombre ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion)
             }
             if (vinculo[0].correo != req.body.correo) {
-                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica correo ${vinculo[0].correo} por el correo ${req.body.correo} del vinculo ${req.body.nombre}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica correo ${vinculo[0].correo} por el correo ${req.body.correo} del vinculo ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion)
             }
             if (vinculo[0].telefono != req.body.telefono) {
-                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica telefono ${vinculo[0].telefono} por el telefono ${req.body.telefono} del vinculo ${req.body.nombre}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica telefono ${vinculo[0].telefono} por el telefono ${req.body.telefono} del vinculo ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion)
             }
             if (vinculo[0].id_tipo_parentesco != req.body.id_tipo_parentesco) {
-                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica tipo parentesco ${vinculo[0].id_tipo_parentesco} por tipo parentesco ${req.body.id_tipo_parentesco} del vinculo ${req.body.nombre}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica tipo parentesco ${vinculo[0].id_tipo_parentesco} por tipo parentesco ${req.body.id_tipo_parentesco} del vinculo ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion)
             }
             res.status(200).json(response)
 
@@ -117,7 +117,7 @@ class vinculosController {
             const seBorro = await this._model.destroy({ where: { id_vinculo: req.params.id } })
             if (seBorro) {
                 res.send({ Mensaje: "Se borro exitosamente" })
-                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 35, `Se elimina vinculo ${vinculo[0].nombre}`, null, null)
+                serviceTransaccion.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 35, `Se elimina vinculo ${vinculo[0].nombre}`, req.body.id_llamada, req.body.grabacion)
             } else {
                 res.send({ Mensaje: "Id no encontrado" })
             }

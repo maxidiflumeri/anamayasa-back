@@ -55,7 +55,7 @@ class conveniosController {
                 await models.facturas.update({ id_convenio: response.id_convenio }, { where: { id_factura: factura.id_factura }, transaction: t })
             }            
             const detalle = `Se genera convenio por ${convenioNuevo.importe} en ${convenioNuevo.cuotas} cuotas.`
-            serviceTransaccion.generaTransaccion(req.headers.token, convenioNuevo.id_deudor, 7, detalle, null, null)
+            serviceTransaccion.generaTransaccion(req.headers.token, convenioNuevo.id_deudor, 7, detalle, req.body.id_llamada, req.body.grabacion)
             await t.commit()
             res.status(200).json(response)
         } catch (error) {
@@ -102,7 +102,7 @@ class conveniosController {
             const response = await this._model.update({ anulado: 1 }, { where: { id_convenio: req.params.id }, transaction: t })
             await models.facturas.update({ id_convenio: null }, { where: { id_convenio: req.params.id }, transaction: t })
             const detalle = `Se anula convenio número ${req.params.id}.`
-            serviceTransaccion.generaTransaccion(req.headers.token, req.params.id_deudor, 9, detalle, null, null)
+            serviceTransaccion.generaTransaccion(req.headers.token, req.params.id_deudor, 9, detalle, req.body.id_llamada, req.body.grabacion)
             await t.commit()
             res.status(200).json(response)
         } catch (error) {

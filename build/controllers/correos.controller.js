@@ -109,7 +109,7 @@ class correosController {
 
       const response = await this._model.create(req.body);
 
-      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 23, `Se agrega correo ${req.body.correo}`, null, null);
+      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 23, `Se agrega correo ${req.body.correo}`, req.body.id_llamada, req.body.grabacion);
 
       res.status(200).json(response);
     } catch (error) {
@@ -147,19 +147,19 @@ class correosController {
       });
 
       if (correo[0].correo != req.body.correo) {
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 28, `Se modifica correo ${req.params.correo} por el correo ${req.body.correo}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 28, `Se modifica correo ${req.params.correo} por el correo ${req.body.correo}`, req.body.id_llamada, req.body.grabacion);
       }
 
       if (correo[0].efectivo != req.body.efectivo) {
         if (req.body.efectivo == 1) {
-          _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 28, `Se marca como principal el correo ${req.body.correo}`, null, null);
+          _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 28, `Se marca como principal el correo ${req.body.correo}`, req.body.id_llamada, req.body.grabacion);
         } else {
-          _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 28, `Se desmarca como principal el correo ${req.body.correo}`, null, null);
+          _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 28, `Se desmarca como principal el correo ${req.body.correo}`, req.body.id_llamada, req.body.grabacion);
         }
       }
 
       if (correo[0].id_tipo_correo != req.body.id_tipo_correo) {
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 28, `Se modifica tipo correo ${correo[0].id_tipo_correo} por tipo correo ${req.body.id_tipo_correo}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 28, `Se modifica tipo correo ${correo[0].id_tipo_correo} por tipo correo ${req.body.id_tipo_correo}`, req.body.idllamada, req.body.grabacion);
       }
 
       res.status(200).json(response);
@@ -185,7 +185,7 @@ class correosController {
           Mensaje: "Se borro exitosamente"
         });
 
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 26, `Se elimina correo ${req.params.correo}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 26, `Se elimina correo ${req.params.correo}`, req.body.id_llamada, req.body.grabacion);
       } else {
         res.send({
           Mensaje: "Id no encontrado"

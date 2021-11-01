@@ -83,7 +83,7 @@ class vinculosController {
 
       const response = await this._model.create(req.body);
 
-      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 34, `Se agrega vinculo ${req.body.nombre}`, null, null);
+      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 34, `Se agrega vinculo ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion);
 
       res.status(200).json(response);
     } catch (error) {
@@ -125,19 +125,19 @@ class vinculosController {
       });
 
       if (vinculo[0].nombre != req.body.nombre) {
-        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica nombre del vinculo ${vinculo[0].nombre} por el nombre ${req.body.nombre}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica nombre del vinculo ${vinculo[0].nombre} por el nombre ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion);
       }
 
       if (vinculo[0].correo != req.body.correo) {
-        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica correo ${vinculo[0].correo} por el correo ${req.body.correo} del vinculo ${req.body.nombre}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica correo ${vinculo[0].correo} por el correo ${req.body.correo} del vinculo ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion);
       }
 
       if (vinculo[0].telefono != req.body.telefono) {
-        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica telefono ${vinculo[0].telefono} por el telefono ${req.body.telefono} del vinculo ${req.body.nombre}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica telefono ${vinculo[0].telefono} por el telefono ${req.body.telefono} del vinculo ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion);
       }
 
       if (vinculo[0].id_tipo_parentesco != req.body.id_tipo_parentesco) {
-        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica tipo parentesco ${vinculo[0].id_tipo_parentesco} por tipo parentesco ${req.body.id_tipo_parentesco} del vinculo ${req.body.nombre}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 36, `Se modifica tipo parentesco ${vinculo[0].id_tipo_parentesco} por tipo parentesco ${req.body.id_tipo_parentesco} del vinculo ${req.body.nombre}`, req.body.id_llamada, req.body.grabacion);
       }
 
       res.status(200).json(response);
@@ -167,7 +167,7 @@ class vinculosController {
           Mensaje: "Se borro exitosamente"
         });
 
-        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 35, `Se elimina vinculo ${vinculo[0].nombre}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, vinculo[0].id_deudor, 35, `Se elimina vinculo ${vinculo[0].nombre}`, req.body.id_llamada, req.body.grabacion);
       } else {
         res.send({
           Mensaje: "Id no encontrado"

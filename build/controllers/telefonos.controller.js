@@ -126,7 +126,7 @@ class telefonosController {
         req.body.telefono = telefonoOk[0].telefono;
         const response = await this._model.create(req.body);
 
-        _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 15, `Se agrega telefono ${req.body.telefono}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 15, `Se agrega telefono ${req.body.telefono}`, req.body.id_llamada, req.body.grabacion);
 
         res.status(200).json(response);
       }
@@ -178,21 +178,21 @@ class telefonosController {
         }); //Inicia carga de transaccion
 
         if (telefono[0].telefono != req.body.telefono) {
-          _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 4, `Se modifica telefono ${req.params.telefono} por el telefono ${req.body.telefono}`, null, null);
+          _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 4, `Se modifica telefono ${req.params.telefono} por el telefono ${req.body.telefono}`, req.body.id_llamada, req.body.grabacion);
         }
 
         if (telefono[0].efectivo != req.body.efectivo) {
           if (req.body.efectivo == 1) {
-            _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 4, `Se marca como principal el telefono ${req.body.telefono}`, null, null);
+            _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 4, `Se marca como principal el telefono ${req.body.telefono}`, req.body.id_llamada, req.body.grabacion);
           } else {
-            _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 4, `Se desmarca como principal el telefono ${req.body.telefono}`, null, null);
+            _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 4, `Se desmarca como principal el telefono ${req.body.telefono}`, req.body.id_llamada, req.body.grabacion);
           }
         }
 
         if (telefono[0].id_tipo_telefono != req.body.id_tipo_telefono) {
           const detalle = `Se modifica el tipo telefono ${telefono[0].id_tipo_telefono} por el tipo telefono ${req.body.id_tipo_telefono} del telefono ${req.body.telefono}`;
 
-          _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 4, detalle, null, null);
+          _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 4, detalle, req.body.id_llamada, req.body.grabacion);
         }
 
         res.status(200).json(response);
@@ -219,7 +219,7 @@ class telefonosController {
           Mensaje: "Se borro exitosamente"
         });
 
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 17, `Se elimina telefono ${req.params.telefono}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 17, `Se elimina telefono ${req.params.telefono}`, req.body.id_llamada, req.body.grabacion);
       } else {
         res.send({
           Mensaje: "Id no encontrado"

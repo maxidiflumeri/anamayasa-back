@@ -25,11 +25,11 @@ router.post('/agregar', auth.verificarGestor, async (req, res, next) => {
     _direccionesController.agregar(req, res, next)
 })
 
-router.put('/modificar/:id', auth.verificarAdministrador, async (req, res, next) => {
+router.put('/modificar/:id', auth.verificarGestor, async (req, res, next) => {
     _direccionesController.actualizar(req, res, next)
 })
 
-router.delete('/eliminar/:id', auth.verificarAdministrador, async (req, res, next) => {
+router.delete('/eliminar/:id', auth.verificarGestor, async (req, res, next) => {
     _direccionesController.eliminar(req, res, next)
 })
 

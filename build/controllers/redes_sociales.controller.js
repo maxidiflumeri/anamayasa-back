@@ -94,7 +94,7 @@ class redes_socialesController {
     try {
       const response = await this._model.create(req.body);
 
-      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 31, `Se agrega usuario ${req.body.usuario}`, null, null);
+      _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 31, `Se agrega usuario ${req.body.usuario}`, req.body.id_llamada, req.body.grabacion);
 
       res.status(200).json(response);
     } catch (error) {
@@ -123,11 +123,11 @@ class redes_socialesController {
       });
 
       if (usuarioRed[0].usuario != req.body.usuario) {
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 33, `Se modifica usuario ${req.params.usuario} por el usuario ${req.body.usuario}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 33, `Se modifica usuario ${req.params.usuario} por el usuario ${req.body.usuario}`, req.body.id_llamada, req.body.grabacion);
       }
 
       if (usuarioRed[0].id_red_social != req.body.id_red_social) {
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 33, `Se modifica tipo red ${usuarioRed[0].id_red_social} por el tipo red ${req.body.id_red_social}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 33, `Se modifica tipo red ${usuarioRed[0].id_red_social} por el tipo red ${req.body.id_red_social}`, req.body.id_llamada, req.body.grabacion);
       }
 
       res.status(200).json(response);
@@ -154,7 +154,7 @@ class redes_socialesController {
           Mensaje: "Se borro exitosamente"
         });
 
-        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 32, `Se elimina usuario ${req.params.usuario}`, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.params.id, 32, `Se elimina usuario ${req.params.usuario}`, req.body.id_llamada, req.body.grabacion);
       } else {
         res.send({
           Mensaje: "Id no encontrado"

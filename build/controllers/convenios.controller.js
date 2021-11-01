@@ -86,7 +86,7 @@ class conveniosController {
 
       const detalle = `Se genera convenio por ${convenioNuevo.importe} en ${convenioNuevo.cuotas} cuotas.`;
 
-      _transaccion.default.generaTransaccion(req.headers.token, convenioNuevo.id_deudor, 7, detalle, null, null);
+      _transaccion.default.generaTransaccion(req.headers.token, convenioNuevo.id_deudor, 7, detalle, req.body.id_llamada, req.body.grabacion);
 
       await t.commit();
       res.status(200).json(response);
@@ -162,7 +162,7 @@ class conveniosController {
       });
       const detalle = `Se anula convenio número ${req.params.id}.`;
 
-      _transaccion.default.generaTransaccion(req.headers.token, req.params.id_deudor, 9, detalle, null, null);
+      _transaccion.default.generaTransaccion(req.headers.token, req.params.id_deudor, 9, detalle, req.body.id_llamada, req.body.grabacion);
 
       await t.commit();
       res.status(200).json(response);

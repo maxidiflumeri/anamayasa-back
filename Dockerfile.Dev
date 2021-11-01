@@ -1,0 +1,39 @@
+
+# instalo node.js en el contenedor
+FROM node:14
+
+# creo directorio de trabajo en el contendor, en este directorio van a estar todos los archivos necesarios para que ande la app
+WORKDIR /app
+
+# le digo que copie todos los archivos que empiecen con package y extension .json en mi directorio de trabajo raiz que declare en la linea anterior
+COPY package*.json ./
+
+# ejecuto el npm install y se crea la carpeta node_modules
+RUN npm install
+
+#ENV PORT 3389
+#ENV NODE_ENV development
+
+# el primer punto dice que copie todo el directorio completo de la app, el segundo punto dice que lo copie dentro del directorio raiz del contenedor
+COPY . .
+
+# ejecuto la aplicacion
+CMD ["npm", "run", "dev"]
+
+# docker build -t node-restapi . se corre este comando en consola para crear la imagen con todos los comandos dichos arriba
+
+# docker run -d -p 4000:3000 node-restapi // ejectuto contenedor node_restapi con -d le digo q se ejecute como servicio, -p le digo q el puerto 3000 del contenedor
+# se exponga en el puerto 4000 en mi pc
+
+#  docker run -it -p 4000:3000 node-restapi // ejectuto contenedor node_restapi con -it le digo q se ejecute en consola como dev para ver los logs, -p le digo q el puerto 3000 del contenedor
+# se exponga en el puerto 4000 en mi pc
+
+# docker images // veo los contenedores que tengo en mi pc
+
+# docker ps // veo las imagenes en ejecucion
+
+# docker ps -a // veo las imagenes que se ejecutaron anteriormente
+
+# docker stop [id] // paro el contenedor que indico con el id
+
+

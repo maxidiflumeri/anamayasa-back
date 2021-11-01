@@ -48,7 +48,7 @@ class envioMailController {
         const textoStr = (0, _textversionjs.default)(req.body.texto);
         const detalle = `Se envía Mail: Para ${req.body.destinatario} /// Asunto: ${req.body.asunto} /// Adjunto/s: ${nombreAdjuntos.length > 0 ? nombreAdjuntos : 'Sin Adjunto'} /// Texo: ${textoStr}`;
 
-        _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 40, detalle, null, null);
+        _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 40, detalle, req.body.id_llamada, req.body.grabacion);
 
         if (req.files) {
           req.files.forEach(archivo => {
@@ -96,9 +96,11 @@ class envioMailController {
       let resultado = await _envioMail.default.enviarMail(remitente, password, req.body.destinatario, 'Envio cupon', 'se envia cupon', adjunto);
 
       if (resultado.codigo == 200) {
-        //const textoStr = textVersion(req.body.texto)
-        //const detalle = `Se envía Mail: Para ${req.body.destinatario}\nAsunto: ${req.body.asunto}\nAdjunto: ${req.file ? req.file.originalname : null}\nTexo: ${textoStr}`
-        //serviceTransaccion.generaTransaccion(req.headers.token, req.body.id_deudor, 40, detalle, null, null)
+        const textoStr = (0, _textversionjs.default)(req.body.texto);
+        const detalle = `Se envía Mail: Para ${req.body.destinatario}\nAsunto: ${req.body.asunto}\nAdjunto/s: cupón_${req.body.deudor}.pdf\nTexo: ${textoStr}`;
+
+        _transaccion.default.generaTransaccion(req.headers.token, req.body.id_deudor, 40, detalle, req.body.id_llamada, req.body.grabacion);
+
         _fs.default.unlinkSync(filePath);
 
         res.status(200).json(resultado);
