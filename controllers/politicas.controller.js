@@ -40,7 +40,8 @@ class politicasController {
         }          
       }
 
-      async agregar(req, res, next){          
+      async agregar(req, res, next){   
+          console.log(req.body)       
         try{                
             const response = await this._model.create(req.body)
             res.status(200).json(response)

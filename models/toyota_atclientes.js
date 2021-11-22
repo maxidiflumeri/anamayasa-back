@@ -12,6 +12,11 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,            
             autoIncrement: false
         },
+        id_gestion: {
+            type: DataTypes.INTEGER,
+            allowNull: false,            
+            autoIncrement: false
+        },
         id_deudor: {
             type: DataTypes.DECIMAL(18, 0),            
             allowNull: false,
@@ -28,13 +33,9 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'id_usuario'
             }
         },
-        legajo_neotel: {
+        legajo_usuario: {
             type: DataTypes.DECIMAL(18, 0),
             allowNull: false,
-        },
-        comentario: {
-            type: DataTypes.STRING,
-            allowNull: false
         },
         fecha: {
             type: DataTypes.DATEONLY,

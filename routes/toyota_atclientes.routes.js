@@ -4,7 +4,7 @@ import models from '../models/index.js'
 import auth from '../middlewares/auth.js'
 import underscore from 'underscore'
 
-const _toyota_atClientesController = new toyota_atClientesController(models.toyota_atClientes)
+const _toyota_atClientesController = new toyota_atClientesController(models.toyota_atclientes)
 const router = routerx()
 
 router.get('/consultar', auth.verificarGestor, async (req, res, next) => {

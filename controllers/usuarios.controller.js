@@ -82,7 +82,7 @@ class usuariosController {
                 let match = await bcrypt.compare(req.body.password, user[0].password)
                 if (match) {
                     let usuario = new usuarioDto(user[0].id_usuario, user[0].nombre_completo, user[0].correo, user[0].dni, user[0].cuil, user[0].id_rol, user[0].legajo_neotel)
-                    let tokenReturn = await token.codificar(usuario.id_usuario, usuario.id_rol, usuario.correo, usuario.legajo_neotel, usuario.nombre)
+                    let tokenReturn = await token.codificar(usuario.id_usuario, usuario.id_rol, usuario.correo, usuario.legajo_neotel, usuario.nombre)                    
                     res.status(200).json({ usuario, tokenReturn })
                 } else {
                     res.status(404).json({

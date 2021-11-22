@@ -23,14 +23,14 @@ class deudorController {
 
     async obtenerPorId(req, res, next) {
         try {
-            const response = await this._model.findAll({ where: { id_deudor: req.query.id } })         
-            if(response.length>0){
+            const response = await this._model.findAll({ where: { id_deudor: req.query.id } })
+            if (response.length > 0) {
                 const deuda_actualizada = await actualiza.actualizaDeuda(response[0].deuda_historica, response[0].id_tipo_actualizacion, response[0].fecha_mora, response[0].id_iva, response[0].id_empresa, response[0].id_deudor)
                 const deudor = new deudorDto(response[0], deuda_actualizada)
                 res.status(200).json(deudor)
-            }else{
-                res.status(200).json({mensaje: 'no se encuentra'})
-            }   
+            } else {
+                res.status(200).json({ mensaje: 'no se encuentra' })
+            }
         } catch (error) {
             res.status(500).json({
                 mensaje: 'Ocurrio un error'
@@ -125,7 +125,7 @@ class deudorController {
 
     async obtenerPrimerDeudor(req, res, next) {
         try {
-            const response = await this._model.findAll({ limit: 1, order: [['id_deudor', 'DESC']] })
+            const response = await this._model.findAll({ where: { id_deudor: { [Op.not]: 1000 } }, limit: 1, order: [['id_deudor', 'ASC']] })
             res.status(200).json(response)
         } catch (error) {
             res.status(500).json({
@@ -187,11 +187,11 @@ class deudorController {
     }
 
     async actualizaDeuda(req, res, next) {
-        try {            
-            const deuda_actualizada = await actualiza.actualizaDeuda(parseFloat(req.query.monto), parseInt(req.query.id_tipo_actualizacion), req.query.fecha, parseInt(req.query.id_iva), parseInt(req.query.id_empresa), parseInt(req.query.id_deudor))            
+        try {
+            const deuda_actualizada = await actualiza.actualizaDeuda(parseFloat(req.query.monto), parseInt(req.query.id_tipo_actualizacion), req.query.fecha, parseInt(req.query.id_iva), parseInt(req.query.id_empresa), parseInt(req.query.id_deudor))
             const response = {
-                monto: deuda_actualizada < parseFloat(req.query.monto)? deuda_actualizada : parseFloat(req.query.monto),
-                interes: deuda_actualizada < parseFloat(req.query.monto)? 0 : deuda_actualizada - parseFloat(req.query.monto)
+                monto: deuda_actualizada < parseFloat(req.query.monto) ? deuda_actualizada : parseFloat(req.query.monto),
+                interes: deuda_actualizada < parseFloat(req.query.monto) ? 0 : deuda_actualizada - parseFloat(req.query.monto)
             }
             res.status(200).json(response)
         } catch (error) {
