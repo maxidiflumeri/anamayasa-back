@@ -27,7 +27,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     fecha_creacion: {
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     txt_politica1: {
       type: DataTypes.STRING,

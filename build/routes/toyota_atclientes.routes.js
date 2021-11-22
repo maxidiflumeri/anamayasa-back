@@ -17,7 +17,7 @@ var _underscore = _interopRequireDefault(require("underscore"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const _toyota_atClientesController = new _toyota_atClientes.default(_index.default.toyota_atClientes);
+const _toyota_atClientesController = new _toyota_atClientes.default(_index.default.toyota_atclientes);
 
 const router = (0, _expressPromiseRouter.default)();
 router.get('/consultar', _auth.default.verificarGestor, async (req, res, next) => {
