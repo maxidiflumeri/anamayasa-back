@@ -15,7 +15,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     id_grupo: {
       type: DataTypes.DECIMAL(18, 0),
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'p_grupos_trabajo',
         key: 'id_grupo'

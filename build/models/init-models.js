@@ -96,6 +96,8 @@ var _toyota_atclientes = require("./toyota_atclientes");
 
 var _agendas_tc = require("./agendas_tc");
 
+var _toyota_gestion = require("./toyota_gestion");
+
 function initModels(sequelize) {
   var codigos_barra = _codigos_barra(sequelize, DataTypes);
 
@@ -191,6 +193,8 @@ function initModels(sequelize) {
 
   var agendas_tc = _agendas_tc(sequelize, DataTypes);
 
+  var toyota_gestion = _toyota_gestion(sequelize, DataTypes);
+
   deudores.belongsToMany(p_redes_sociales, {
     through: redes_sociales,
     foreignKey: "id_deudor",
@@ -242,6 +246,54 @@ function initModels(sequelize) {
   deudores.hasMany(toyota_atclientes, {
     as: "toyota_atclientes",
     foreignKey: "id_deudor"
+  });
+  toyota_gestion.belongsTo(deudores, {
+    as: "id_deudor_deudore",
+    foreignKey: "id_deudor"
+  });
+  deudores.hasMany(toyota_gestion, {
+    as: "toyota_gestion",
+    foreignKey: "id_deudor"
+  });
+  toyota_gestion.belongsTo(p_codigos_gestion, {
+    as: "id_gestion_p_codigos_gestion",
+    foreignKey: "id_gestion"
+  });
+  p_codigos_gestion.hasMany(toyota_gestion, {
+    as: "toyota_gestion",
+    foreignKey: "id_respuesta"
+  });
+  toyota_gestion.belongsTo(p_codigos_situacion, {
+    as: "id_situacion_p_codigos_situacion",
+    foreignKey: "id_situacion"
+  });
+  p_codigos_situacion.hasMany(toyota_gestion, {
+    as: "toyota_gestion",
+    foreignKey: "id_origen"
+  });
+  toyota_gestion.belongsTo(p_tipos_pago, {
+    as: "id_tipo_pago_p_tipos_pago",
+    foreignKey: "id_tipo_pago"
+  });
+  p_tipos_pago.hasMany(toyota_gestion, {
+    as: "toyota_gestion",
+    foreignKey: "id_tipo_pago"
+  });
+  toyota_gestion.belongsTo(p_entidades_recaudadoras, {
+    as: "id_entidad_recaudadora_p_entidades_recaudadoras",
+    foreignKey: "id_banco"
+  });
+  p_entidades_recaudadoras.hasMany(toyota_gestion, {
+    as: "toyota_gestion",
+    foreignKey: "id_entidad"
+  });
+  toyota_gestion.belongsTo(usuarios, {
+    as: "id_usuario_usuario",
+    foreignKey: "id_usuario"
+  });
+  usuarios.hasMany(toyota_gestion, {
+    as: "toyota_gestion",
+    foreignKey: "id_usuario"
   });
   convenios.belongsTo(deudores, {
     as: "id_deudor_deudore",
@@ -649,7 +701,8 @@ function initModels(sequelize) {
     movil,
     tareas,
     toyota_atclientes,
-    agendas_tc
+    agendas_tc,
+    toyota_gestion
   };
 }
 

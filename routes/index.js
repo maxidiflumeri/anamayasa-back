@@ -46,6 +46,7 @@ import p_template_correos from './p_template_correos.routes'
 import procesos from './procesos.routes'
 import toyota_atclientes from './toyota_atclientes.routes'
 import agendas_tc from './agendas_tc.routes'
+import toyota_gestion from './toyota_gestion.routes'
 
 const router = routerx()
 
@@ -96,5 +97,6 @@ router.use('/templateCorreos', p_template_correos)
 router.use('/procesos', procesos)
 router.use('/toyotaAtClientes', toyota_atclientes)
 router.use('/agendasTc', agendas_tc)
+router.use('/toyotaGestion', toyota_gestion)
 
 export default router

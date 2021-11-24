@@ -61,6 +61,10 @@ class usuariosController {
   }
 
   async actualizar(req, res, next) {
+    if (req.body.password) {
+      req.body.password = await _bcryptjs.default.hash(req.body.password, 10);
+    }
+
     try {
       const response = await this._model.update(req.body, {
         where: {
